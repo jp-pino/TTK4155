@@ -1,0 +1,1 @@
+void USART_Initialize(unsigned int baud);
