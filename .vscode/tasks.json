@@ -1,0 +1,55 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build",
+			"type": "shell",
+			"group": "build",
+			"command": "make",
+			"problemMatcher": []
+		},
+		{
+			"label": "Clean",
+			"type": "shell",
+			"group": "build",
+			"command": "make",
+			"args": [
+				"clean"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "Write firmware",
+			"type": "shell",
+			"group": "build",
+			"command": "make",
+			"args": [
+				"flash"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "Debug server",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "shared",
+				"focus": true,
+				"showReuseMessage": false,
+				"clear": false
+			},
+			"isBackground": true,
+			"command": "avarice",
+			"args": [
+				"--dragon",
+				"-R",
+				"-P",
+				"atmega162",
+				"--file",
+				"/build/main.elf",
+				":3333"
+			],
+			"problemMatcher": []
+		}
+	]
+}
