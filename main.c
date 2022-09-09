@@ -8,6 +8,8 @@
 
 int main() {
   USART_Initialize(MYUBRR);
-  printf("Juan Pablo\r\nIa Tsomalia\r\nSymen Bjerkestrand");
+  while (1) {
+    printf("Juan Pablo\r\nIa Tsomalia\r\nSimen Bjerkestrand\n");
+  }
   return 0;
 }
