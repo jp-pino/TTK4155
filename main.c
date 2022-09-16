@@ -115,6 +115,8 @@ int main() {
       case LEFT:
         printf("DATA[X]: %ld \t DATA[Y]: %ld \t LEFT \r\n", joystick.x, joystick.y);
         break;
+      default: 
+        printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", data.AIN0, data.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
     }
   }
 
@@ -139,8 +141,8 @@ ISR(INT2_vect) {
     return;
   }
 
-  data.AIN0 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN0;
-  data.AIN1 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN1;
+  data.AIN0 = (((long)(adc[0]) - 128) * 200 / 255);
+  data.AIN1 = (((long)(adc[0]) - 128) * 200 / 255);
   data.AIN2 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN2;
   data.AIN3 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN3;
 
