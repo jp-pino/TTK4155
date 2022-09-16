@@ -13,15 +13,15 @@
 typedef enum { LEFT, RIGHT, UP, DOWN, NEUTRAL } ADC_DIR;
 
 typedef struct {
-  unsigned long AIN0;
-  unsigned long AIN1;
-  unsigned long AIN2;
-  unsigned long AIN3;
+  long AIN0;
+  long AIN1;
+  long AIN2;
+  long AIN3;
 } ADC_T;
 
 typedef struct {
-  unsigned long x;
-  unsigned long y;
+  long x;
+  long y;
   ADC_DIR direction;
 } JOY_T;
 
