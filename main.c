@@ -1,14 +1,33 @@
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <avr/sleep.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <avr/io.h>
-
 #include "lib/usart/usart.h"
-
 
 #define FOSC 4951200  // Clock Speed
 #define BAUD 9600
 #define MYUBRR FOSC / 16 / BAUD - 1
+
+typedef enum { LEFT, RIGHT, UP, DOWN, NEUTRAL } ADC_DIR;
+
+typedef struct {
+  unsigned long AIN0;
+  unsigned long AIN1;
+  unsigned long AIN2;
+  unsigned long AIN3;
+} ADC_T;
+
+typedef struct {
+  unsigned long x;
+  unsigned long y;
+  ADC_DIR direction;
+} JOY_T;
+
+ADC_T data;
+JOY_T joystick;
+ADC_T offset;
 
 void SRAM_test() {
   volatile char *ext_ram = (char *)0x1800;  // Start address for the SRAM
@@ -28,12 +47,11 @@ void SRAM_test() {
     ext_ram[i] = some_value;
     uint8_t retreived_value = ext_ram[i];
     if (retreived_value != some_value) {
-      // printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n", i,
-      //        retreived_value, some_value);
+      printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n", i,
+             retreived_value, some_value);
       write_errors++;
     }
   }
-
 
   // Retrieval phase: Check that no values were changed during or after the
   // write phase
@@ -43,8 +61,8 @@ void SRAM_test() {
     uint8_t some_value = rand();
     uint8_t retreived_value = ext_ram[i];
     if (retreived_value != some_value) {
-      // printf("Retrieval phase error: ext_ram[%4d] = %02X (should be %02X)\n", i,
-      //        retreived_value, some_value);
+      printf("Retrieval phase error: ext_ram[%4d] = %02X (should be %02X)\n", i,
+             retreived_value, some_value);
       retrieval_errors++;
     }
   }
@@ -54,17 +72,94 @@ void SRAM_test() {
       write_errors, retrieval_errors);
 }
 
-
 int main() {
+  volatile char *adc = (char *)0x1400;
   USART_Initialize(MYUBRR);
 
   MCUCR |= (1 << SRE);
   SFIOR |= (1 << XMM2);
 
-  SRAM_test();
+  // Initialization for the clock 2 MHz
+  DDRD |= (1 << 4);
+  TCCR3A |= (1 << COM3A0);
+  TCCR3B |= (1 << WGM32) | (1 << CS30);
+  OCR3AH = 0x00;
+  OCR3AL = 0x00;
 
-  // while (1) {
-  //   printf("Juan Pablo\r\nIa Tsomalia\r\nSimen Bjerkestrand\n");
-  // }
+  //// Initialization for PE0 - INT0
+
+  // Disable global interrupts
+  cli();
+  // Interrupt on rising edge PE0
+  EMCUCR |= (1 << ISC2);
+  // Enable interrupt on PE0
+  GICR |= (1 << INT2);
+  // Enable global interrupts
+  sei();
+
+  adc[0] = 0x00;
+
+  // SRAM_test();
+
+  while (1) {
+    switch (joystick.direction) {
+      case UP:
+        printf("DATA[X]: %d %% \t DATA[Y]: %d %%  UP \r\n", joystick.x, joystick.y);
+        break;
+      case DOWN:
+        printf("DATA[X]: %d %% \t DATA[Y]: %d %%  DOWN \r\n", joystick.x, joystick.y);
+        break;
+      case RIGHT:
+        printf("DATA[X]: %d %% \t DATA[Y]: %d %%  RIGHT \r\n", joystick.x, joystick.y);
+        break;
+      case LEFT:
+        printf("DATA[X]: %d %% \t DATA[Y]: %d %%  LEFT \r\n", joystick.x, joystick.y);
+        break;
+    }
+  }
+
   return 0;
+}
+
+char current = 0;
+int first = 0;
+
+ISR(INT2_vect) {
+  unsigned char val;
+  volatile unsigned char *adc = (unsigned char *)0x1400;
+
+  if (first == 0) {
+    offset.AIN0 = (((long)(adc[0]) - 128) * 200 / 255);
+    offset.AIN1 = (((long)(adc[0]) - 128) * 200 / 255);
+    offset.AIN2 = (((long)(adc[0]) - 128) * 200 / 255);
+    offset.AIN3 = (((long)(adc[0]) - 128) * 200 / 255);
+    first = 1;
+
+    adc[0] = 0x00;
+    return;
+  }
+
+  data.AIN0 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN0;
+  data.AIN1 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN1;
+  data.AIN2 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN2;
+  data.AIN3 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN3;
+
+  joystick.x = data.AIN2;
+  joystick.y = data.AIN3;
+  joystick.direction = NEUTRAL;
+  if (joystick.x < 10 && joystick.x > -10) {
+    if (joystick.y > 10) {
+      joystick.direction = UP;
+    } else if (joystick.y < -10) {
+      joystick.direction = DOWN;
+    }
+  } else {
+    if (joystick.x > 10) {
+      joystick.direction = RIGHT;
+    } else if (joystick.x < -10) {
+      joystick.direction = LEFT;
+    }
+  }
+
+  adc[0] = 0x00;
 }
