@@ -104,16 +104,16 @@ int main() {
   while (1) {
     switch (joystick.direction) {
       case UP:
-        printf("DATA[X]: %d %% \t DATA[Y]: %d %%  UP \r\n", joystick.x, joystick.y);
+        printf("DATA[X]: %ld \t DATA[Y]: %ld \t UP \r\n", joystick.x, joystick.y);
         break;
       case DOWN:
-        printf("DATA[X]: %d %% \t DATA[Y]: %d %%  DOWN \r\n", joystick.x, joystick.y);
+        printf("DATA[X]: %ld \t DATA[Y]: %ld \t DOWN \r\n", joystick.x, joystick.y);
         break;
       case RIGHT:
-        printf("DATA[X]: %d %% \t DATA[Y]: %d %%  RIGHT \r\n", joystick.x, joystick.y);
+        printf("DATA[X]: %ld \t DATA[Y]: %ld \t RIGHT \r\n", joystick.x, joystick.y);
         break;
       case LEFT:
-        printf("DATA[X]: %d %% \t DATA[Y]: %d %%  LEFT \r\n", joystick.x, joystick.y);
+        printf("DATA[X]: %ld \t DATA[Y]: %ld \t LEFT \r\n", joystick.x, joystick.y);
         break;
     }
   }
@@ -144,8 +144,14 @@ ISR(INT2_vect) {
   data.AIN2 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN2;
   data.AIN3 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN3;
 
+  // data.AIN0 = adc[0];
+  // data.AIN1 = adc[0];
+  // data.AIN2 = adc[0];
+  // data.AIN3 = adc[0];
+
   joystick.x = data.AIN2;
   joystick.y = data.AIN3;
+  
   joystick.direction = NEUTRAL;
   if (joystick.x < 10 && joystick.x > -10) {
     if (joystick.y > 10) {
