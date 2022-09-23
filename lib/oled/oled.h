@@ -20,6 +20,7 @@ void OLED_pos(uint8_t row, uint8_t col);
 void OLED_write_data(uint8_t dt);
 void OLED_print(unsigned char *data);
 void OLED_set_brightness(uint8_t level);
+void OLED_print_char8(unsigned char c);
 
 
 

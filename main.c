@@ -5,7 +5,6 @@
 
 #include "lib/usart/usart.h"
 #include "lib/oled/oled.h"
-#include "lib/oled/fonts.h"
 
 #define FOSC 4951200  // Clock Speed
 #define BAUD 9600
@@ -105,29 +104,41 @@ int main() {
 	//// OLED Init
   OLED_init();
   OLED_reset();
-  OLED_goto_line(3);
-  OLED_print("Ia Tsomaia");
-  OLED_set_brightness(64);
+  OLED_goto_line(4);
+  
+  
+  
+  // OLED_write_data(0b00000000);
+  // OLED_write_data(0b01000001);
+  // OLED_write_data(0b01111111);
+  // OLED_write_data(0b01111111);
+  // OLED_write_data(0b01000001);
+  // OLED_write_data(0b00000000);
+  // OLED_write_data(0b00000000);
+  // OLED_write_data(0b00000000);
+  OLED_print_char8('I');
+  // OLED_print("Ia Tsomaia");
+  // OLED_set_brightness(64);
   
 
-  while (1) {
-    switch (joystick.direction) {
-      case UP:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t UP \r\n", joystick.x, joystick.y);
-        break;
-      case DOWN:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t DOWN \r\n", joystick.x, joystick.y);
-        break;
-      case RIGHT:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t RIGHT \r\n", joystick.x, joystick.y);
-        break;
-      case LEFT:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t LEFT \r\n", joystick.x, joystick.y);
-        break;
-      default: 
-        printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", data.AIN0, data.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
-    }
-  }
+  // while (1) {
+  //   switch (joystick.direction) {
+  //     case UP:
+  //       printf("DATA[X]: %ld \t DATA[Y]: %ld \t UP \r\n", joystick.x, joystick.y);
+  //       break;
+  //     case DOWN:
+  //       printf("DATA[X]: %ld \t DATA[Y]: %ld \t DOWN \r\n", joystick.x, joystick.y);
+  //       break;
+  //     case RIGHT:
+  //       printf("DATA[X]: %ld \t DATA[Y]: %ld \t RIGHT \r\n", joystick.x, joystick.y);
+  //       break;
+  //     case LEFT:
+  //       printf("DATA[X]: %ld \t DATA[Y]: %ld \t LEFT \r\n", joystick.x, joystick.y);
+  //       break;
+  //     default: 
+  //       printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d    -     %d \n\r", data.AIN0, data.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
+  //   }
+  // }
 
   return 0;
 }
