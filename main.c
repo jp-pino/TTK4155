@@ -1,10 +1,11 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include <avr/sleep.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "lib/usart/usart.h"
+#include "lib/oled/oled.h"
+#include "lib/oled/fonts.h"
 
 #define FOSC 4951200  // Clock Speed
 #define BAUD 9600
@@ -74,51 +75,74 @@ void SRAM_test() {
 
 int main() {
   volatile char *adc = (char *)0x1400;
-  USART_Initialize(MYUBRR);
+  // USART_Initialize(MYUBRR);
 
   MCUCR |= (1 << SRE);
   SFIOR |= (1 << XMM2);
 
   // Initialization for the clock 2 MHz
-  DDRD |= (1 << 4);
-  TCCR3A |= (1 << COM3A0);
-  TCCR3B |= (1 << WGM32) | (1 << CS30);
-  OCR3AH = 0x00;
-  OCR3AL = 0x00;
+  // DDRD |= (1 << 4);
+  // TCCR3A |= (1 << COM3A0);
+  // TCCR3B |= (1 << WGM32) | (1 << CS30);
+  // OCR3AH = 0x00;
+  // OCR3AL = 0x00;
 
-  //// Initialization for PE0 - INT0
+  // //// Initialization for PE0 - INT0
 
-  // Disable global interrupts
+  // // Disable global interrupts
   cli();
-  // Interrupt on rising edge PE0
-  EMCUCR |= (1 << ISC2);
-  // Enable interrupt on PE0
-  GICR |= (1 << INT2);
-  // Enable global interrupts
-  sei();
+  // // Interrupt on rising edge PE0
+  // EMCUCR |= (1 << ISC2);
+  // // Enable interrupt on PE0
+  // GICR |= (1 << INT2);
+  // // Enable global interrupts
+  // sei();
 
-  adc[0] = 0x00;
+  // adc[0] = 0x00;
 
   // SRAM_test();
-
-  while (1) {
-    switch (joystick.direction) {
-      case UP:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t UP \r\n", joystick.x, joystick.y);
-        break;
-      case DOWN:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t DOWN \r\n", joystick.x, joystick.y);
-        break;
-      case RIGHT:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t RIGHT \r\n", joystick.x, joystick.y);
-        break;
-      case LEFT:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t LEFT \r\n", joystick.x, joystick.y);
-        break;
-      default: 
-        printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", data.AIN0, data.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
+	// //OLED Init
+  init_program();
+  write_c(0x00);
+  write_c(0x10);
+  for (uint8_t i = 0; i < 8; i++) {
+    write_c(0xB0 | i);
+    write_c(0x00);
+    write_c(0x10);
+    for (uint8_t j = 0; j < 128; j++) {
+      write_d(j);
     }
   }
+
+  while(1) {
+
+  }
+  
+  
+
+  // write_c(0xB2);
+  // for (char j = 0; j < 60; j++) {
+  //   write_d(0b10101010);
+  // } 
+
+  // while (1) {
+  //   switch (joystick.direction) {
+  //     case UP:
+  //       printf("DATA[X]: %ld \t DATA[Y]: %ld \t UP \r\n", joystick.x, joystick.y);
+  //       break;
+  //     case DOWN:
+  //       printf("DATA[X]: %ld \t DATA[Y]: %ld \t DOWN \r\n", joystick.x, joystick.y);
+  //       break;
+  //     case RIGHT:
+  //       printf("DATA[X]: %ld \t DATA[Y]: %ld \t RIGHT \r\n", joystick.x, joystick.y);
+  //       break;
+  //     case LEFT:
+  //       printf("DATA[X]: %ld \t DATA[Y]: %ld \t LEFT \r\n", joystick.x, joystick.y);
+  //       break;
+  //     default: 
+  //       printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", data.AIN0, data.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
+  //   }
+  // }
 
   return 0;
 }
@@ -127,47 +151,41 @@ char current = 0;
 int first = 0;
 
 ISR(INT2_vect) {
-  unsigned char val;
-  volatile unsigned char *adc = (unsigned char *)0x1400;
+  // volatile unsigned char *adc = (unsigned char *)0x1400;   
 
-  if (first == 0) {
-    offset.AIN0 = (((long)(adc[0]) - 128) * 200 / 255);
-    offset.AIN1 = (((long)(adc[0]) - 128) * 200 / 255);
-    offset.AIN2 = (((long)(adc[0]) - 128) * 200 / 255);
-    offset.AIN3 = (((long)(adc[0]) - 128) * 200 / 255);
-    first = 1;
+  // if (first == 0) {
+  //   offset.AIN0 = (((long)(adc[0]) - 128) * 200 / 255);
+  //   offset.AIN1 = (((long)(adc[0]) - 128) * 200 / 255);
+  //   offset.AIN2 = (((long)(adc[0]) - 128) * 200 / 255);
+  //   offset.AIN3 = (((long)(adc[0]) - 128) * 200 / 255);
+  //   first = 1;
 
-    adc[0] = 0x00;
-    return;
-  }
+  //   adc[0] = 0x00;
+  //   return;
+  // }
 
-  data.AIN0 = (((long)(adc[0]) - 128) * 200 / 255);
-  data.AIN1 = (((long)(adc[0]) - 128) * 200 / 255);
-  data.AIN2 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN2;
-  data.AIN3 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN3;
+  // data.AIN0 = (((long)(adc[0]) - 128) * 200 / 255);
+  // data.AIN1 = (((long)(adc[0]) - 128) * 200 / 255);
+  // data.AIN2 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN2;
+  // data.AIN3 = (((long)(adc[0]) - 128) * 200 / 255) - offset.AIN3;
 
-  // data.AIN0 = adc[0];
-  // data.AIN1 = adc[0];
-  // data.AIN2 = adc[0];
-  // data.AIN3 = adc[0];
-
-  joystick.x = data.AIN2;
-  joystick.y = data.AIN3;
+  // joystick.x = data.AIN2;
+  // joystick.y = data.AIN3;
   
-  joystick.direction = NEUTRAL;
-  if (joystick.x < 10 && joystick.x > -10) {
-    if (joystick.y > 10) {
-      joystick.direction = UP;
-    } else if (joystick.y < -10) {
-      joystick.direction = DOWN;
-    }
-  } else {
-    if (joystick.x > 10) {
-      joystick.direction = RIGHT;
-    } else if (joystick.x < -10) {
-      joystick.direction = LEFT;
-    }
-  }
+  // joystick.direction = NEUTRAL;
+  // if (joystick.x < 10 && joystick.x > -10) {
+  //   if (joystick.y > 10) {
+  //     joystick.direction = UP;
+  //   } else if (joystick.y < -10) {
+  //     joystick.direction = DOWN;
+  //   }
+  // } else {
+  //   if (joystick.x > 10) {
+  //     joystick.direction = RIGHT;
+  //   } else if (joystick.x < -10) {
+  //     joystick.direction = LEFT;
+  //   }
+  // }
 
-  adc[0] = 0x00;
+  // adc[0] = 0x00;
 }
