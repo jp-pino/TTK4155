@@ -105,6 +105,7 @@ int main() {
   OLED_init();
   OLED_reset();
   OLED_goto_line(4);
+  // OLED_goto_line(1);
   
   
   
@@ -116,9 +117,11 @@ int main() {
   // OLED_write_data(0b00000000);
   // OLED_write_data(0b00000000);
   // OLED_write_data(0b00000000);
-  OLED_print_char8('I');
-  // OLED_print("Ia Tsomaia");
-  // OLED_set_brightness(64);
+  // OLED_print_char8('I');
+  OLED_print("Ia Tsomaia", OLED_print_char8);
+  OLED_set_brightness(64);
+  OLED_goto_line(1);
+  OLED_print("Juanpi", OLED_print_char4);
   
 
   // while (1) {

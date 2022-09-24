@@ -71,32 +71,30 @@ void OLED_write_data(uint8_t dt) {
   *ptr = dt;
 }
 
-
-void OLED_print_char8(int c) {
-  uint8_t a = font8[c-32][0];
-  OLED_write_data(a);
-  a = font8[c-32][1];
-  OLED_write_data(a);
-  a = font8[c-32][2];
-  OLED_write_data(a);
-  a = font8[c-32][3];
-  OLED_write_data(a);
-  a = font8[c-32][4];
-  OLED_write_data(a);
-  a = font8[c-32][5];
-  OLED_write_data(a);
-  a = font8[c-32][6];
-  OLED_write_data(a);
-  a = font8[c-32][7];
-  OLED_write_data(a);
+void OLED_print_char8(unsigned char c) {
+  for (int i = 0; i < 8; i++) {
+    uint8_t aux = pgm_read_word(&(font8[c - 32][i]));
+    OLED_write_data(aux);
+  }
 }
 
-void OLED_print(unsigned char *data) {
+void OLED_print_char5(unsigned char c) {
+  for (int i = 0; i < 5; i++) {
+    uint8_t aux = pgm_read_word(&(font5[c - 32][i]));
+    OLED_write_data(aux);
+  }
+}
+
+void OLED_print_char4(unsigned char c) {
+  for (int i = 0; i < 4; i++) {
+    uint8_t aux = pgm_read_word(&(font4[c - 32][i]));
+    OLED_write_data(aux);
+  }
+}
+
+void OLED_print(unsigned char *data, void (*f)(unsigned char)) {
 	while (*data != '\0') {
-    for (uint8_t i = 0; i < 8; i++) {
-      OLED_write_data(font8[*(data)][i]);
-    }
-		data++;
+    f(*data++);
 	}
 }
 

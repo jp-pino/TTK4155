@@ -18,11 +18,13 @@ void OLED_goto_line(uint8_t line);
 void OLED_clear_line(uint8_t line);
 void OLED_pos(uint8_t row, uint8_t col);
 void OLED_write_data(uint8_t dt);
-void OLED_print(unsigned char *data);
+void OLED_print(unsigned char *data, void (*f)(unsigned char));
 void OLED_set_brightness(uint8_t level);
+
+
 void OLED_print_char8(unsigned char c);
-
-
+void OLED_print_char5(unsigned char c);
+void OLED_print_char4(unsigned char c);
 
 
 #endif//__LIB_OLED_OLED_H__
