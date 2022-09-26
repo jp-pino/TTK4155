@@ -6,7 +6,7 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [
-                "__AVR_AT90USB162__"
+                "__AVR_ATmega162__"
             ],
             "macFrameworkPath": [
                 "/System/Library/Frameworks",
