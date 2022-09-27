@@ -1,9 +1,10 @@
-#ifndef __LIB_JOYSTICK_JOYSTICK_H_
-#define __LIB_JOYSTICK_JOYSTICK_H_
+#ifndef __LIB_JOYSTICK_JOYSTICK_H__
+#define __LIB_JOYSTICK_JOYSTICK_H__
 
 #include "../adc/adc.h"
 
 typedef enum { LEFT, RIGHT, UP, DOWN, NEUTRAL } joy_dir_t;
+const char* JOY_DIRECTION_STRINGS[NEUTRAL + 1];
 
 typedef struct {
   long x;
@@ -13,4 +14,4 @@ typedef struct {
 
 volatile joy_t JOYSTICK_get_data(offset_sel_t offset_correction);
 
-#endif//__LIB_JOYSTICK_JOYSTICK_H_
+#endif//__LIB_JOYSTICK_JOYSTICK_H__

@@ -80,42 +80,30 @@ int main() {
 	//// OLED Init
   OLED_init();
   SCREEN_reset();
-  SCREEN_goto_line(4);
+  // SCREEN_goto_line(4);
   // OLED_goto_line(1);
   
-  SCREEN_print("Ia Tsomaia", SCREEN_print_char8);
+  // SCREEN_print("Ia Tsomaia", SCREEN_print_char8);
   // OLED_set_brightness(64);
-  SCREEN_goto_line(1);
-  SCREEN_print("Juanpi", SCREEN_print_char4);
+  // SCREEN_goto_line(1);
+  // SCREEN_print("Juanpi", SCREEN_print_char4);
 
-  SCREEN_line(10, 10, 60, 60);
+  // SCREEN_line(10, 10, 60, 60);
+// 
+  // SCREEN_circle(50, 50, 10);
 
-  SCREEN_circle(50, 50, 10);
-
-  MENU_init();
-  MENU_add_option(&option1);
-  MENU_add_option(&option2);
+  // MENU_init();
+  // MENU_add_option(&option1);
+  // MENU_add_option(&option2);
   
   
   while (1) {
-    joy_t joystick = JOYSTICK_get_data(MAP);
-    adc_t adc = ADC_get_data(MAP);
-
-    switch (joystick.direction) {
-      case UP:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t UP \r\n", joystick.x, joystick.y);
-        break;
-      case DOWN:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t DOWN \r\n", joystick.x, joystick.y);
-        break;
-      case RIGHT:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t RIGHT \r\n", joystick.x, joystick.y);
-        break;
-      case LEFT:
-        printf("DATA[X]: %ld \t DATA[Y]: %ld \t LEFT \r\n", joystick.x, joystick.y);
-        break;
-      default: 
-        printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", adc.AIN0, adc.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
+    joy_t joystick = JOYSTICK_get_data(OFFSET);
+    adc_t adc = ADC_get_data(NO_CORRECTION);
+    if (joystick.direction == NEUTRAL) {
+      printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", adc.AIN0, adc.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
+    } else {
+      printf("DATA[X]: %ld \t DATA[Y]: %ld \t %s \r\n", joystick.x, joystick.y, JOY_DIRECTION_STRINGS[joystick.direction]);
     }
   }
 

@@ -1,11 +1,15 @@
 #include "joystick.h"
 
+#include <stdio.h>
+
 #include "../adc/adc.h"
 
 volatile joy_t joystick;
 
+const char* JOY_DIRECTION_STRINGS[] = { "LEFT", "RIGHT", "UP", "DOWN", "NEUTRAL" };
+
 volatile joy_t JOYSTICK_get_data(offset_sel_t offset_correction) {
-  static volatile joy_t result;
+  
   adc_t data = ADC_get_data(offset_correction);
 
   joystick.x = data.AIN2;
@@ -26,5 +30,5 @@ volatile joy_t JOYSTICK_get_data(offset_sel_t offset_correction) {
     }
   }
 
-  return result;
+  return joystick;
 }

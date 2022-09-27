@@ -5,6 +5,7 @@
 
 volatile adc_t data;
 volatile adc_t offset;
+volatile adc_t result;
 
 volatile char current = 0;
 volatile int first = 0;
@@ -38,8 +39,6 @@ void ADC_init() {
 }
 
 volatile adc_t ADC_get_data(offset_sel_t offset_correction) {
-  static volatile adc_t result;
-
   switch (offset_correction) {
     case OFFSET:
       result.AIN0 = data.AIN0 - offset.AIN0;
