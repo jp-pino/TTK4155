@@ -58,17 +58,29 @@ void SRAM_test() {
 
 void option1_fn() {
   printf("SELECTED OPTION 1!!! <<<<<<<<<<<<<<<<<<");
+
+  SCREEN_line(10, 10, 60, 60);
 }
 
 void option2_fn() {
   printf("SELECTED OPTION 2!!! <<<<<<<<<<<<<<<<<<");
+
+  SCREEN_circle(50, 50, 10);
 }
 
-menu_option_t option1 = {"OPTION 1", option1_fn};
-menu_option_t option2 = {"OPTION 2", option2_fn};
+void option3_fn() {
+  printf("SELECTED OPTION 3!!! <<<<<<<<<<<<<<<<<<");
+
+  SCREEN_reset();
+}
+
+menu_option_t option1 = {"Line    ", option1_fn};
+menu_option_t option2 = {"Circle  ", option2_fn};
+menu_option_t option3 = {"Reset   ", option3_fn};
 
 int main() {
   USART_Initialize(MYUBRR);
+  JOYSTICK_init();
 
   MCUCR |= (1 << SRE);
   SFIOR |= (1 << XMM2);
@@ -90,11 +102,11 @@ int main() {
 
   // SCREEN_line(10, 10, 60, 60);
 // 
-  // SCREEN_circle(50, 50, 10);
 
-  // MENU_init();
-  // MENU_add_option(&option1);
-  // MENU_add_option(&option2);
+  MENU_init();
+  MENU_add_option(&option1);
+  MENU_add_option(&option2);
+  MENU_add_option(&option3);
   
   
   while (1) {

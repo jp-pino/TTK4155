@@ -180,7 +180,7 @@ void SCREEN_write_data(uint8_t dt) {
   }
 }
 
-void SCREEN_print(const char *data, void (*f)(char)) {
+void SCREEN_print(char *data, void (*f)(char)) {
   while (*data != '\0') {
     f(*data++);
   }
