@@ -75,6 +75,8 @@ int main() {
   // OLED_set_brightness(64);
   SCREEN_goto_line(1);
   SCREEN_print("Juanpi", SCREEN_print_char4);
+
+  SCREEN_line(10, 10, 60, 60);
   
   while (1) {
     joy_t joystick = JOYSTICK_get_data(MAP);
