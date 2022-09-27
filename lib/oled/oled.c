@@ -40,7 +40,7 @@ void OLED_init() {
   OLED_write_command(0xa6);  // set normal display
   OLED_write_command(0xaf);  // display on
 
-  // Initialization for the apple
+  // Initialization for the timer
   cli();
   TCCR1B |= (1 << WGM12) | (1 << CS12);
   OCR1AH = (uint8_t)(19340 >> 8) & 0xFF;
@@ -160,9 +160,7 @@ void SCREEN_goto_line(uint8_t line) {
 }
 
 void SCREEN_pixel(uint8_t x, uint8_t y, bit_t val) {
-  
   long address = (long)(x) + (long)(y / 8) * 128;
-  printf("(%d, %d) address: %ld bit: %d\n", x, y, (long)(x) + (long)(y / 8), (y % 8));
   if (val == ZERO) {
     ext_ram[address] &= ~(1 << (y % 8));
   } else {
@@ -182,7 +180,7 @@ void SCREEN_write_data(uint8_t dt) {
   }
 }
 
-void SCREEN_print(char *data, void (*f)(char)) {
+void SCREEN_print(const char *data, void (*f)(char)) {
   while (*data != '\0') {
     f(*data++);
   }

@@ -7,6 +7,7 @@
 #include "lib/oled/oled.h"
 #include "lib/adc/adc.h"
 #include "lib/joystick/joystick.h"
+#include "lib/menu/menu.h"
 
 #define FOSC 4951200  // Clock Speed
 #define BAUD 9600
@@ -55,6 +56,17 @@ void SRAM_test() {
       write_errors, retrieval_errors);
 }
 
+void option1_fn() {
+  printf("SELECTED OPTION 1!!! <<<<<<<<<<<<<<<<<<");
+}
+
+void option2_fn() {
+  printf("SELECTED OPTION 2!!! <<<<<<<<<<<<<<<<<<");
+}
+
+menu_option_t option1 = {"OPTION 1", option1_fn};
+menu_option_t option2 = {"OPTION 2", option2_fn};
+
 int main() {
   USART_Initialize(MYUBRR);
 
@@ -79,6 +91,11 @@ int main() {
   SCREEN_line(10, 10, 60, 60);
 
   SCREEN_circle(50, 50, 10);
+
+  MENU_init();
+  MENU_add_option(&option1);
+  MENU_add_option(&option2);
+  
   
   while (1) {
     joy_t joystick = JOYSTICK_get_data(MAP);
