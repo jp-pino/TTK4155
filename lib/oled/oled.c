@@ -41,11 +41,12 @@ void OLED_init() {
   OLED_write_command(0xaf);  // display on
 
   // Initialization for the apple
-  TCCR1A |= (1 << COM1A0);
-  TCCR1B |= (1 << WGM12) | (1 << CS10);
-  OCR1AH = (uint8_t)(82519 >> 8) & 0xFF;
-  OCR1AL = (uint8_t)(82519 & 0xFF);
+  cli();
+  TCCR1B |= (1 << WGM12) | (1 << CS12);
+  OCR1AH = (uint8_t)(19340 >> 8) & 0xFF;
+  OCR1AL = (uint8_t)(19340 & 0xFF);
   TIMSK |= (1 << OCIE1A);
+  sei();
 
   SCREEN_reset();
   OLED_reset();
