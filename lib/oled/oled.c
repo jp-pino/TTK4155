@@ -97,21 +97,21 @@ void OLED_write_data(uint8_t dt) {
   *ptr = dt;
 }
 
-void OLED_print_char8(unsigned char c) {
+void OLED_print_char8(char c) {
   for (int i = 0; i < 8; i++) {
     uint8_t aux = pgm_read_word(&(font8[c - 32][i]));
     OLED_write_data(aux);
   }
 }
 
-void OLED_print_char5(unsigned char c) {
+void OLED_print_char5(char c) {
   for (int i = 0; i < 5; i++) {
     uint8_t aux = pgm_read_word(&(font5[c - 32][i]));
     OLED_write_data(aux);
   }
 }
 
-void OLED_print_char4(unsigned char c) {
+void OLED_print_char4(char c) {
   for (int i = 0; i < 4; i++) {
     uint8_t aux = pgm_read_word(&(font4[c - 32][i]));
     OLED_write_data(aux);
@@ -123,21 +123,21 @@ void OLED_set_brightness(uint8_t level) {
   OLED_write_command(level);
 }
 
-void SCREEN_print_char8(unsigned char c) {
+void SCREEN_print_char8(char c) {
   for (int i = 0; i < 8; i++) {
     uint8_t aux = pgm_read_word(&(font8[c - 32][i]));
     SCREEN_write_data(aux);
   }
 }
 
-void SCREEN_print_char5(unsigned char c) {
+void SCREEN_print_char5(char c) {
   for (int i = 0; i < 5; i++) {
     uint8_t aux = pgm_read_word(&(font5[c - 32][i]));
     SCREEN_write_data(aux);
   }
 }
 
-void SCREEN_print_char4(unsigned char c) {
+void SCREEN_print_char4(char c) {
   for (int i = 0; i < 4; i++) {
     uint8_t aux = pgm_read_word(&(font4[c - 32][i]));
     SCREEN_write_data(aux);
@@ -160,7 +160,9 @@ void SCREEN_goto_line(uint8_t line) {
 }
 
 void SCREEN_pixel(uint8_t x, uint8_t y, bit_t val) {
-  long address = (long)(x) + (long)(y / 8);
+  
+  long address = (long)(x) + (long)(y / 8) * 128;
+  printf("(%d, %d) address: %ld bit: %d\n", x, y, (long)(x) + (long)(y / 8), (y % 8));
   if (val == ZERO) {
     ext_ram[address] &= ~(1 << (y % 8));
   } else {
@@ -180,7 +182,7 @@ void SCREEN_write_data(uint8_t dt) {
   }
 }
 
-void SCREEN_print(char *data, void (*f)(unsigned char)) {
+void SCREEN_print(char *data, void (*f)(char)) {
   while (*data != '\0') {
     f(*data++);
   }

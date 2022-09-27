@@ -77,6 +77,8 @@ int main() {
   SCREEN_print("Juanpi", SCREEN_print_char4);
 
   SCREEN_line(10, 10, 60, 60);
+
+  SCREEN_circle(50, 50, 10);
   
   while (1) {
     joy_t joystick = JOYSTICK_get_data(MAP);
