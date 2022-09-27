@@ -48,6 +48,7 @@ void OLED_init() {
   TIMSK |= (1 << OCIE1A);
 
   SCREEN_reset();
+  OLED_reset();
 }
 
 ISR(TIMER1_COMPA_vect) {
@@ -57,8 +58,6 @@ ISR(TIMER1_COMPA_vect) {
       OLED_write_data(ext_ram[i * 128 + j]);
     }
   }
-
-  return 0;
 }
 
 void OLED_write_command(uint8_t comm) {
@@ -150,6 +149,8 @@ void SCREEN_reset() {
       ext_ram[cursor.row * 128 + cursor.col] = 0x00;
     }
   }
+  cursor.row = 0;
+  cursor.col = 0;
 }
 
 void SCREEN_goto_line(uint8_t line) {
@@ -177,7 +178,7 @@ void SCREEN_write_data(uint8_t dt) {
   }
 }
 
-void SCREEN_print(unsigned char *data, void (*f)(unsigned char)) {
+void SCREEN_print(char *data, void (*f)(unsigned char)) {
   while (*data != '\0') {
     f(*data++);
   }

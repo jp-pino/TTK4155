@@ -72,7 +72,7 @@ int main() {
   // OLED_goto_line(1);
   
   SCREEN_print("Ia Tsomaia", SCREEN_print_char8);
-  OLED_set_brightness(64);
+  // OLED_set_brightness(64);
   SCREEN_goto_line(1);
   SCREEN_print("Juanpi", SCREEN_print_char4);
   
@@ -94,7 +94,7 @@ int main() {
         printf("DATA[X]: %ld \t DATA[Y]: %ld \t LEFT \r\n", joystick.x, joystick.y);
         break;
       default: 
-        printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d    -     %d \n\r", adc.AIN0, adc.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
+        printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", adc.AIN0, adc.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
     }
   }
 
