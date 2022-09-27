@@ -160,11 +160,11 @@ void SCREEN_goto_line(uint8_t line) {
 }
 
 void SCREEN_pixel(uint8_t x, uint8_t y, bit_t val) {
-  printf("(%d, %d)\n", x, y);
+  long address = (long)(x) + (long)(y / 8);
   if (val == ZERO) {
-    ext_ram[x + y / 8] &= ~(1 << (x % 8));
+    ext_ram[address] &= ~(1 << (y % 8));
   } else {
-    ext_ram[x + y / 8] |= (1 << (x % 8));
+    ext_ram[address] |= (1 << (y % 8));
   }
 }
 
