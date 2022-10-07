@@ -12,7 +12,7 @@
                 "/System/Library/Frameworks",
                 "/Library/Frameworks"
             ],
-            "compilerPath": "/usr/local/bin/avr-gcc",
+            "compilerPath": "/opt/homebrew/bin/avr-gcc",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x86"
