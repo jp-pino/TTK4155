@@ -9,6 +9,7 @@
 #include "lib/joystick/joystick.h"
 #include "lib/menu/menu.h"
 #include "lib/spi/spi.h"
+#include "lib/mcp2515/mcp2515.h"
 
 #define FOSC 4951200  // Clock Speed
 #define BAUD 9600
@@ -82,16 +83,15 @@ void spi_write() {
   printf("\n\n\nSELECTED SPI WRITE!!! <<<<<<<<<<<<<<<<<<\n");
 
   // Reset
-  SPI_send("\xc0", 1);
-  
-  
-  // Write instruction
-  SPI_send("\x02\x0F\x40", 3);
+  MCP2515_reset();
 
-  // Read instruction (to validate write)
-  uint8_t res = SPI_send("\x03\x0F\x00", 3);
+  // Set loopback mode
+  MCP2515_bit_modify(MCP_CANCTRL, (1 << 6), MODE_LOOPBACK);
 
-  printf("DATA: %x\n\n\n\n", res);
+  MCP2515_write(0x55);
+  MCP2515_rts();
+  printf("Waiting\n");
+  printf("READ DATA: %x \n\n\n", MCP2515_read());
 }
 
 menu_option_t option1 = {"Line    ", option1_fn};

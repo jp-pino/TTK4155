@@ -47,6 +47,7 @@ ISR(TIMER0_COMP_vect) {
     options[current_option]->f();
   }
 
+  last_pressed = joystick.button;
   last_direction = joystick.direction;
 }
 

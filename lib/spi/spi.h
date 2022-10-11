@@ -14,8 +14,8 @@ typedef enum {
 } cpha_t;
 
 typedef enum {
-  DORD_LSB, 
-  DORD_MSB
+  DORD_MSB, 
+  DORD_LSB
 } dord_t;
 
 void SPI_init(cpol_t cpol, cpha_t cpha, dord_t dord);
