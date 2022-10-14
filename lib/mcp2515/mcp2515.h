@@ -3,8 +3,20 @@
 
 #include <stdint.h>
 
+typedef enum {
+  DATA_FRAME,
+  REMOTE_TRANSMIT_REQUEST
+} can_rtr_t;
+
+typedef struct {
+  uint16_t id;
+  uint8_t* data;
+  uint8_t length;
+  can_rtr_t remote;
+} message_t;
+
 uint8_t MCP2515_read();
-void MCP2515_write(uint8_t data);
+void MCP2515_write(message_t message);
 void MCP2515_write_reg(uint8_t reg, uint8_t data);
 uint8_t MCP2515_read_reg(uint8_t reg);
 void MCP2515_rts();
@@ -71,6 +83,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TXB0CTRL	0x30
 #define MCP_TXB0SIDH  0x31
 #define MCP_TXB0SIDL  0x32
+#define MCP_TXB0DLC   0x35
 #define MCP_TXB1CTRL	0x40
 #define MCP_TXB2CTRL	0x50
 #define MCP_RXB0CTRL	0x60
