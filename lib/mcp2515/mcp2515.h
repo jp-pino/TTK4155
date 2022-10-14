@@ -3,15 +3,27 @@
 
 #include <stdint.h>
 
-uint8_t MCP2515_read();
-void MCP2515_write(uint8_t data);
+typedef enum {
+  DATA_FRAME,
+  REMOTE_TRANSMIT_REQUEST
+} can_rtr_t;
+
+typedef struct {
+  uint16_t id;
+  uint8_t* data;
+  uint8_t length;
+  can_rtr_t remote;
+} message_t;
+
+message_t MCP2515_read();
+uint8_t MCP2515_read_byte();
+void MCP2515_write(message_t message);
+void MCP2515_write_reg(uint8_t reg, uint8_t data);
+uint8_t MCP2515_read_reg(uint8_t reg);
 void MCP2515_rts();
 void MCP2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data);
 void MCP2515_reset();
 uint8_t MCP2515_read_status();
-
-#ifndef __MCP2515_H
-#define __MCP2515_H
 
 /*
 mcp2515.h
@@ -70,13 +82,18 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_CANINTF		0x2C
 #define MCP_EFLG		0x2D
 #define MCP_TXB0CTRL	0x30
+#define MCP_TXB0SIDH  0x31
+#define MCP_TXB0SIDL  0x32
+#define MCP_TXB0DLC   0x35
 #define MCP_TXB1CTRL	0x40
 #define MCP_TXB2CTRL	0x50
 #define MCP_RXB0CTRL	0x60
 #define MCP_RXB0SIDH	0x61
 #define MCP_RXB1CTRL	0x70
 #define MCP_RXB1SIDH	0x71
-
+#define MCP_RXB0DLC   0x65
+#define MCP_RXB0SIDH  0x61
+#define MCP_RXB0SIDL  0x62
 
 #define MCP_TX_INT		0x1C		// Enable all transmit interrupts
 #define MCP_TX01_INT	0x0C		// Enable TXB0 and TXB1 interrupts
@@ -165,10 +182,5 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_ERRIF		0x20
 #define MCP_WAKIF		0x40
 #define MCP_MERRF		0x80
-
-
-
-#endif
-
 
 #endif//__LIB_MCP2515_MCP2515_H__

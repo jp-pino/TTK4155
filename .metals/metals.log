@@ -1,0 +1,41 @@
+2022.10.11 16:29:32 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /Users/jp.pinob/Projects/NTNU/TTK4155/.metals/lsp.trace.json or /Users/jp.pinob/Library/Caches/org.scalameta.metals/lsp.trace.json[0m
+2022.10.11 16:29:32 INFO  logging to file /Users/jp.pinob/Projects/NTNU/TTK4155/.metals/metals.log[0m
+2022.10.11 16:29:32 INFO  Started: Metals version 0.11.9 in workspace '/Users/jp.pinob/Projects/NTNU/TTK4155' for client Visual Studio Code 1.71.2.[0m
+2022.10.11 16:29:33 INFO  time: initialize in 0.86s[0m
+2022.10.11 16:29:33 WARN  Build server is not auto-connectable.[0m
+Oct 12, 2022 12:45:27 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 12, 2022 12:47:27 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 12, 2022 12:47:37 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2022.10.12 12:47:44 INFO  shutting down Metals[0m
+2022.10.12 12:48:04 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /Users/jp.pinob/Projects/NTNU/TTK4155/.metals/lsp.trace.json or /Users/jp.pinob/Library/Caches/org.scalameta.metals/lsp.trace.json
+2022.10.12 12:48:04 INFO  logging to file /Users/jp.pinob/Projects/NTNU/TTK4155/.metals/metals.log
+2022.10.12 12:48:04 INFO  Started: Metals version 0.11.9 in workspace '/Users/jp.pinob/Projects/NTNU/TTK4155' for client Visual Studio Code 1.72.0.
+2022.10.12 12:48:06 INFO  time: initialize in 1.58s
+2022.10.12 12:48:07 WARN  Build server is not auto-connectable.
+Oct 12, 2022 1:25:56 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 12, 2022 1:25:56 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 12, 2022 1:25:56 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2022.10.12 13:28:01 INFO  shutting down Metals
+2022.10.12 13:28:20 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /Users/jp.pinob/Projects/NTNU/TTK4155/.metals/lsp.trace.json or /Users/jp.pinob/Library/Caches/org.scalameta.metals/lsp.trace.json
+2022.10.12 13:28:21 INFO  logging to file /Users/jp.pinob/Projects/NTNU/TTK4155/.metals/metals.log
+2022.10.12 13:28:21 INFO  Started: Metals version 0.11.9 in workspace '/Users/jp.pinob/Projects/NTNU/TTK4155' for client Visual Studio Code 1.72.1.
+2022.10.12 13:28:23 INFO  time: initialize in 1.59s
+2022.10.12 13:28:24 WARN  Build server is not auto-connectable.
+Oct 12, 2022 1:28:24 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 12, 2022 6:54:52 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 14, 2022 12:27:35 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 14, 2022 12:27:36 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 14, 2022 12:42:08 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Oct 14, 2022 1:42:57 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace

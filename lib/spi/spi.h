@@ -9,8 +9,8 @@ typedef enum {
 } cpol_t;
 
 typedef enum {
-  CPHA_RISING, 
-  CPHA_FALLING
+  CPHA_LEADING, 
+  CPHA_TRAILING
 } cpha_t;
 
 typedef enum {
@@ -19,7 +19,8 @@ typedef enum {
 } dord_t;
 
 void SPI_init(cpol_t cpol, cpha_t cpha, dord_t dord);
-
-uint8_t SPI_send(uint8_t* byte, uint8_t length);
+uint8_t SPI_send(uint8_t* byte);
+uint8_t SPI_send_length(uint8_t* byte, uint8_t length);
+uint8_t* SPI_getData();
 
 #endif  //__LIB_SPI_SPI_H__
