@@ -9,14 +9,18 @@ char buffer[8];
 
 message_t MCP2515_read() {
   SPI_send_length("\x90\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 15);
+
+  // for (int i = 0; i < 15; i++) {
+  //   printf("0x%02x\n", SPI_getData()[i]);
+  // } 
   temp.id = SPI_getData()[1] << 3 | ((SPI_getData()[2] >> 5) & 0x07);
-  temp.length = 8;//SPI_getData()[5] & 0x07; //MCP2515_read_reg(MCP_RXB0DLC) & 0x07;
+  temp.length = SPI_getData()[5] & 0x0F;
   // SPI_send_length("\x92\x00\x00\x00\x00\x00\x00\x00\x00\x00", 10);
   for (uint8_t i = 0; i < temp.length; i++) {
     buffer[i] = SPI_getData()[i + 6];
   }
   temp.data = buffer;
-  temp.remote = DATA_FRAME;
+  temp.remote = (SPI_getData()[5] & (1 << 6)) >> 6;
 
   return temp;
 }

@@ -45,8 +45,6 @@ uint8_t SPI_send_length(uint8_t* byte, uint8_t length) {
   // Slave select
   PORTB &= ~(1 << 4);
 
-  printf(">>>> LENGTH: %d\n", length);
-
   for (uint8_t i = 0; i < length; i++) {
     /* Start transmission */
     SPDR = *(byte++);
@@ -75,7 +73,7 @@ uint8_t SPI_send(uint8_t* byte) {
   // Slave select
   PORTB &= ~(1 << 4);
 
-  printf(">>>> LENGTH: %d\n", length);
+  // printf(">>>> LENGTH: %d\n", length);
 
   for (uint8_t i = 0; i < length; i++) {
     /* Start transmission */
