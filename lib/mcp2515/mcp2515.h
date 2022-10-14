@@ -15,7 +15,8 @@ typedef struct {
   can_rtr_t remote;
 } message_t;
 
-uint8_t MCP2515_read();
+message_t MCP2515_read();
+uint8_t MCP2515_read_byte();
 void MCP2515_write(message_t message);
 void MCP2515_write_reg(uint8_t reg, uint8_t data);
 uint8_t MCP2515_read_reg(uint8_t reg);
@@ -90,7 +91,9 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXB0SIDH	0x61
 #define MCP_RXB1CTRL	0x70
 #define MCP_RXB1SIDH	0x71
-
+#define MCP_RXB0DLC   0x65
+#define MCP_RXB0SIDH  0x61
+#define MCP_RXB0SIDL  0x62
 
 #define MCP_TX_INT		0x1C		// Enable all transmit interrupts
 #define MCP_TX01_INT	0x0C		// Enable TXB0 and TXB1 interrupts

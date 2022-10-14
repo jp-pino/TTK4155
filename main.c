@@ -106,12 +106,24 @@ void spi_write() {
   }
   printf("READ MCP_CANSTAT 0x%x\n", SPI_send_length("\x03\x0e\x00", 3));
 
-  MCP2515_write((message_t){0x01, "\xAA", 1, DATA_FRAME});
+  MCP2515_write((message_t){0x01, "\xAA\xBB\xCC\xDD\xEE\xFF\x00\x00", 8, DATA_FRAME});
   MCP2515_rts();
 
   while(MCP2515_read_reg(MCP_CANINTF) & MCP_RX0IF == 0);
 
-  printf("READ DATA: 0x%x \n\n\n", MCP2515_read());
+  printf("READ BYTE: 0x%02x\n", MCP2515_read_byte());
+
+  message_t res = MCP2515_read();
+  
+  printf("READ ID: %x\n READ LENGTH: %d\n READ REMOTE: %d\n READ DATA: 0x", res.id, res.length, res.remote);
+
+  for (int i = 0; i < res.length; i++) {\
+    printf("%02x", res.data[i]);
+  }
+
+  printf("\n\n");
+
+  
   
   MCP2515_bit_modify(MCP_CANINTF, MCP_RX0IF, 0x00);
 	  
@@ -201,7 +213,7 @@ int main() {
     if (joystick.direction == NEUTRAL) {
       // printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", adc.AIN0, adc.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
     } else {
-      printf("DATA[X]: %ld \t DATA[Y]: %ld \t %s \r\n", joystick.x, joystick.y, JOY_DIRECTION_STRINGS[joystick.direction]);
+      // printf("DATA[X]: %ld \t DATA[Y]: %ld \t %s \r\n", joystick.x, joystick.y, JOY_DIRECTION_STRINGS[joystick.direction]);
     }
   }
 

@@ -7,6 +7,8 @@
 #include <avr/io.h>
 
 
+uint8_t buffer[128];
+
 void SPI_init(cpol_t cpol, cpha_t cpha, dord_t dord) {
   /* Set MOSI and SCK output, all others input */
   DDRB |= (1 << 4) | (1 << 5) | (1 << 7);
@@ -53,12 +55,17 @@ uint8_t SPI_send_length(uint8_t* byte, uint8_t length) {
     while(!(SPSR & (1<<SPIF)));
 
     data = SPDR;
+    buffer[i] = data;
   }
 
   // Slave deselect
   PORTB |= (1 << 4);
 
   return data;
+}
+
+uint8_t* SPI_getData() {
+  return buffer;
 }
 
 uint8_t SPI_send(uint8_t* byte) {
