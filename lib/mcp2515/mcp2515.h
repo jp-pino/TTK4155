@@ -5,13 +5,12 @@
 
 uint8_t MCP2515_read();
 void MCP2515_write(uint8_t data);
+void MCP2515_write_reg(uint8_t reg, uint8_t data);
+uint8_t MCP2515_read_reg(uint8_t reg);
 void MCP2515_rts();
 void MCP2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data);
 void MCP2515_reset();
 uint8_t MCP2515_read_status();
-
-#ifndef __MCP2515_H
-#define __MCP2515_H
 
 /*
 mcp2515.h
@@ -70,6 +69,8 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_CANINTF		0x2C
 #define MCP_EFLG		0x2D
 #define MCP_TXB0CTRL	0x30
+#define MCP_TXB0SIDH  0x31
+#define MCP_TXB0SIDL  0x32
 #define MCP_TXB1CTRL	0x40
 #define MCP_TXB2CTRL	0x50
 #define MCP_RXB0CTRL	0x60
@@ -165,10 +166,5 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_ERRIF		0x20
 #define MCP_WAKIF		0x40
 #define MCP_MERRF		0x80
-
-
-
-#endif
-
 
 #endif//__LIB_MCP2515_MCP2515_H__
