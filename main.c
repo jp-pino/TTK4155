@@ -84,10 +84,10 @@ void spi_write() {
 
   // Reset
   MCP2515_reset();
-  printf("Reset 1\n");
+  // printf("Reset 1\n");
 
   MCP2515_reset();
-  printf("Reset 2\n");
+  // printf("Reset 2\n");
 
   // Clear masks
   MCP2515_write_reg(MCP_RXM0SIDH, 0x00);
@@ -96,8 +96,8 @@ void spi_write() {
   // Set interrupts
   MCP2515_write_reg(MCP_CANINTE, 0x01);
   
-  
-  SPI_send_length("\x02\x0f\x40", 3);
+  // Set normal mode
+  SPI_send_length("\x02\x0f\x00", 3);
   
   // Verify device entered Loopback mode
   uint8_t dummy = MCP2515_read_reg(MCP_CANSTAT);
@@ -106,7 +106,7 @@ void spi_write() {
   }
   printf("READ MCP_CANSTAT 0x%x\n", SPI_send_length("\x03\x0e\x00", 3));
 
-  MCP2515_write((message_t){0x01, "\xAA\xBB\xCC\xDD\xEE\xFF\x00\x00", 8, DATA_FRAME});
+  MCP2515_write((message_t){0x05, "\xAA\xBB\xCC\xDD\xEE\xFF\x00\x00", 5, DATA_FRAME});
   MCP2515_rts();
 
   while(MCP2515_read_reg(MCP_CANINTF) & MCP_RX0IF == 0);
