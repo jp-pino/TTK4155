@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := $(shell find . -name "*.c" | grep -v Project_Windows) 
+SOURCE_FILES := $(shell find . -name "*.c" | grep -v Project_Windows | grep -v node2) 
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
@@ -22,7 +22,7 @@ OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 .DEFAULT_GOAL := $(BUILD_DIR)/main.hex
 
 $(BUILD_DIR):
-	for line in `find . -name "*.c"`; do mkdir -p $(BUILD_DIR)/`dirname $$line`; done;
+	for line in `find . -name "*.c" | grep -v Project_Windows | grep -v node2`; do mkdir -p $(BUILD_DIR)/`dirname $$line`; done;
 
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
