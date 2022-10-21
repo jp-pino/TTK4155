@@ -2,7 +2,10 @@
   "files.associations": {
     "oled.h": "c",
     "spi.h": "c",
-    "usart.h": "c"
+    "usart.h": "c",
+    "uart.h": "c",
+    "can_interrupt.h": "c",
+    "can_controller.h": "c"
   },
   "files.watcherExclude": {
     "**/target": true

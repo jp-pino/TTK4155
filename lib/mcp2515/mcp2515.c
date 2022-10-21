@@ -7,6 +7,34 @@
 message_t temp = {0, 0, 0, 0};
 char buffer[8];
 
+void MCP2515_init() {
+  // Reset
+  MCP2515_reset();
+  // printf("Reset 1\n");
+
+  MCP2515_reset();
+  // printf("Reset 2\n");
+
+  // Clear masks
+  MCP2515_write_reg(MCP_RXM0SIDH, 0x00);
+  MCP2515_write_reg(MCP_RXM0SIDL, 0x00);
+
+  // Set interrupts
+  MCP2515_write_reg(MCP_CANINTE, 0x01);
+
+
+  // Set CNF1 to SJW = 1 BRP = 1
+  MCP2515_write_reg(MCP_CNF1, SJW2 | (1 << 0));
+  // Set CNF2 
+  MCP2515_write_reg(MCP_CNF2, BTLMODE | SAMPLE_1X | (1 << 3) | (1 << 0));
+  // Set CNF3
+  MCP2515_write_reg(MCP_CNF3, WAKFIL_DISABLE | (2 << 0));
+  
+  
+  // Set normal mode
+  SPI_send_length("\x02\x0f\x00", 3);
+}
+
 message_t MCP2515_read() {
   SPI_send_length("\x90\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 15);
 
