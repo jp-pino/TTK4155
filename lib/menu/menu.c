@@ -5,6 +5,7 @@
 
 #include "../joystick/joystick.h"
 #include "../oled/oled.h"
+#include "../mcp2515/mcp2515.h"
 
 menu_option_t* options[MENU_MAX_OPTIONS];
 int current_option;
@@ -27,6 +28,12 @@ ISR(TIMER0_COMP_vect) {
   static volatile joy_dir_t last_direction = NEUTRAL;
   static volatile joy_dir_t last_pressed = NEUTRAL;
   joy_t joystick = JOYSTICK_get_data(OFFSET);
+
+
+  uint8_t buffer[1] = { (uint8_t)joystick.x };
+
+  MCP2515_write((message_t){0x05, buffer, 1, DATA_FRAME});
+  MCP2515_rts();
 
   if (joystick.direction != last_direction) {
     // printf("CURRENT: %d - %s!!\n", current_option, JOY_DIRECTION_STRINGS[joystick.direction]);

@@ -18,12 +18,12 @@ int main()
     configure_uart();
     printf("Hello World\n\r");
 
+    // Node 2
+    can_init_def_tx_rx_mb((2 << CAN_BR_PHASE2_Pos) | (1 << CAN_BR_PHASE1_Pos) | (1 << CAN_BR_PROPAG_Pos) | (1 << CAN_BR_SJW_Pos) | (20 << CAN_BR_BRP_Pos) | (CAN_BR_SMP_ONCE));
+
     // REG_PORT_DIRSET1 = PORT_PB27;
-    PIOB->PIO_OER = PIO_PB27;
-    while (1)
-    {
+    while (1) {
         printf("Hello World\n\r");
-        PIOB->PIO_PDR ^= 1 << 27;
     }
     
 }

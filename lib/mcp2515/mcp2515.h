@@ -15,6 +15,7 @@ typedef struct {
   can_rtr_t remote;
 } message_t;
 
+void MCP2515_init();
 message_t MCP2515_read();
 uint8_t MCP2515_read_byte();
 void MCP2515_write(message_t message);

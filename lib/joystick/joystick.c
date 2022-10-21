@@ -17,7 +17,6 @@ void JOYSTICK_init() {
 volatile joy_t JOYSTICK_get_data(offset_sel_t offset_correction) {
   
   adc_t data = ADC_get_data(offset_correction);
-  
 
   joystick.button = ((PINB & (1 << 2)) >> 2); //PB2
 
