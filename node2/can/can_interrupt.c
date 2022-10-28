@@ -19,6 +19,10 @@
 
 #define DEBUG_INTERRUPT 1
 
+long map(long x, long in_min, long in_max, long out_min, long out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 /**
  * \brief CAN0 Interrupt handler for RX, TX and bus error interrupts
  *
@@ -54,8 +58,10 @@ void CAN0_Handler( void )
 		if(DEBUG_INTERRUPT)printf("message data length: %d\n\r", message.data_length);
 		for (int i = 0; i < message.data_length; i++)
 		{
-			if(DEBUG_INTERRUPT)printf("%d ", message.data[i]);
+			if(DEBUG_INTERRUPT)printf("%d ", (int8_t)message.data[i]);
 		}
+
+    PWM->PWM_CH_NUM[3].PWM_CDTY |= PWM_CDTY_CDTY(map((int8_t)message.data[0], -128, 100, 2363, 5513));
 		if(DEBUG_INTERRUPT)printf("\n\r");
 	}
 	
