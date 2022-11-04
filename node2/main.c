@@ -45,6 +45,8 @@ int main(void)
     PMC->PMC_PCR |= PMC_PCR_EN | (ID_PWM << PMC_PCR_PID_Pos);
     PMC->PMC_PCER1 = 1 << (ID_PWM - 32);
 
+    WDT->WDT_MR |= WDT_MR_WDDIS;
+
 
     REG_PIOC_WPMR = 0x50494F00; // Write protect disable
     PIOC->PIO_PDR |= PIO_PDR_P18;
@@ -61,7 +63,7 @@ int main(void)
 
 
 
-    // init_LED();
+    init_LED();
 
     while (1) 
     {
@@ -72,8 +74,9 @@ int main(void)
 
 
       printf("Score: %d\n\r", score);
-      // int i = 0;
-      // while (i++ < 999999);
-		//REG_PIOB_CODR = 1 << 27;
+      int i = 0;
+      REG_PIOA_ODSR = 1 << 19;
+      while (i++ < 9999999);
+      REG_PIOA_ODSR &= ~(1 << 19);
     }
 }
