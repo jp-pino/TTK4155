@@ -11,6 +11,11 @@
 #include "can/can_controller.h"
 #include "can/can_interrupt.h"
 
+#include "adc/adc.h"
+
+int score = 0;
+int last_state = 1;
+
 void init_LED()
 {
   
@@ -34,6 +39,8 @@ int main(void)
     configure_uart();
     // Can Init
     can_init_def_tx_rx_mb((2 << CAN_BR_PHASE2_Pos) | (1 << CAN_BR_PHASE1_Pos) | (1 << CAN_BR_PROPAG_Pos) | (1 << CAN_BR_SJW_Pos) | (20 << CAN_BR_BRP_Pos) | (CAN_BR_SMP_ONCE));
+    // ADC Init
+    ADC_Init();
 
     PMC->PMC_PCR |= PMC_PCR_EN | (ID_PWM << PMC_PCR_PID_Pos);
     PMC->PMC_PCER1 = 1 << (ID_PWM - 32);
@@ -58,8 +65,15 @@ int main(void)
 
     while (1) 
     {
-		  REG_PIOA_ODSR = 1 << 19;
-		
+      int current = 1;
+      if (ADC_GetData() < 300) current = 0;
+      if (last_state == 1 && current == 0) score++;
+      last_state = current;
+
+
+      printf("Score: %d\n\r", score);
+      // int i = 0;
+      // while (i++ < 999999);
 		//REG_PIOB_CODR = 1 << 27;
     }
 }
