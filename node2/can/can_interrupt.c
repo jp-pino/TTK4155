@@ -17,7 +17,7 @@
 
 #include "can_controller.h"
 
-#define DEBUG_INTERRUPT 1
+#define DEBUG_INTERRUPT 0
 
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -56,7 +56,7 @@ void CAN0_Handler( void )
 		}
 
 		PWM->PWM_CH_NUM[6].PWM_CDTYUPD |= PWM_CDTY_CDTY(map((int8_t)message.data[0], -128, 100, 2363, 5513)); // map((int8_t)message.data[0], -128, 100, 2363, 5513)
-		printf("mapped value: %d original value: %d\n",(int32_t)map((int8_t)message.data[0], -128, 100, 2363, 5513), (int8_t)message.data[0]);
+		// printf("mapped value: %d original value: %d\n",(int32_t)map((int8_t)message.data[0], -128, 100, 2363, 5513), (int8_t)message.data[0]);
 
 		//if(DEBUG_INTERRUPT)printf("message id: %d\n\r", message.id);
 		//if(DEBUG_INTERRUPT)printf("message data length: %d\n\r", message.data_length);
