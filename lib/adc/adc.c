@@ -45,6 +45,11 @@ volatile adc_t ADC_get_data(offset_sel_t offset_correction) {
       result.AIN1 = data.AIN1 - offset.AIN1;
       result.AIN2 = data.AIN2 - offset.AIN2;
       result.AIN3 = data.AIN3 - offset.AIN3;
+
+      if (result.AIN0 < -128) result.AIN0 = -128;
+      if (result.AIN1 < -128) result.AIN1 = -128;
+      if (result.AIN2 < -128) result.AIN2 = -128;
+      if (result.AIN3 < -128) result.AIN3 = -128;
       break;
     case MAP:
       if (result.AIN0 < offset.AIN0) {
@@ -83,24 +88,31 @@ volatile adc_t ADC_get_data(offset_sel_t offset_correction) {
   return result;
 }
 
+
+
+long i = 0;
 ISR(INT2_vect) {
   volatile unsigned char *adc = (unsigned char *)0x1400;
 
   if (first == 0) {
-    offset.AIN0 = (((long)(adc[0]) - 128) * 200 / 255);
-    offset.AIN1 = (((long)(adc[0]) - 128) * 200 / 255);
-    offset.AIN2 = (((long)(adc[0]) - 128) * 200 / 255);
-    offset.AIN3 = (((long)(adc[0]) - 128) * 200 / 255);
+    if(i++ < 100) { 
+      adc[0] = 0x00;
+      return;
+    }
+    offset.AIN0 = (long)(adc[0]);
+    offset.AIN1 = (long)(adc[0]);
+    offset.AIN2 = (long)(adc[0]);
+    offset.AIN3 = (long)(adc[0]);
     first = 1;
 
     adc[0] = 0x00;
     return;
   }
 
-  data.AIN0 = (((long)(adc[0]) - 128) * 200 / 255);
-  data.AIN1 = (((long)(adc[0]) - 128) * 200 / 255);
-  data.AIN2 = (((long)(adc[0]) - 128) * 200 / 255);
-  data.AIN3 = (((long)(adc[0]) - 128) * 200 / 255);
+  data.AIN0 = (long)(adc[0]);
+  data.AIN1 = (long)(adc[0]);
+  data.AIN2 = (long)(adc[0]);
+  data.AIN3 = (long)(adc[0]);
 
   adc[0] = 0x00;
 }

@@ -30,7 +30,9 @@ ISR(TIMER0_COMP_vect) {
   joy_t joystick = JOYSTICK_get_data(OFFSET);
 
 
-  uint8_t buffer[1] = { (uint8_t)joystick.x };
+  uint8_t buffer[1] = { (int8_t)joystick.x };
+
+  printf("Data: %d <-> %d <-> %d\n", (int8_t)joystick.x, joystick.x, (int32_t)((int8_t)joystick.x));
 
   MCP2515_write((message_t){0x05, buffer, 1, DATA_FRAME});
   MCP2515_rts();
