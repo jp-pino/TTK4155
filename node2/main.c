@@ -12,6 +12,8 @@
 #include "can/can_interrupt.h"
 
 #include "adc/adc.h"
+#include "motor/motor.h"
+#include "systick/systick.h"
 
 int score = 0;
 int last_state = 1;
@@ -23,32 +25,32 @@ void init_LED()
   REG_PIOA_OER  = 1 << 19; //  Enables the output on the I/O line.
   REG_PIOA_ABSR = 1 << 19; // Assigns the I/O line to the Peripheral B function.
   REG_PIOA_PER  = 1 << 19; // Enable REgister
-  
   REG_PIOA_SODR = 1 << 19; // Output data register
-  
-  
   REG_PIOA_OWER = 1 << 19;
   
   
 }
 
+
 int main(void)
 {
     /* Initialize the SAM system */
     SystemInit();
+    SysTick_Init();
     configure_uart();
     // Can Init
     can_init_def_tx_rx_mb((2 << CAN_BR_PHASE2_Pos) | (1 << CAN_BR_PHASE1_Pos) | (1 << CAN_BR_PROPAG_Pos) | (1 << CAN_BR_SJW_Pos) | (20 << CAN_BR_BRP_Pos) | (CAN_BR_SMP_ONCE));
     // ADC Init
     ADC_Init();
 
+    Motor_Init();
+    
     PMC->PMC_PCR |= PMC_PCR_EN | (ID_PWM << PMC_PCR_PID_Pos);
     PMC->PMC_PCER1 = 1 << (ID_PWM - 32);
 
     WDT->WDT_MR |= WDT_MR_WDDIS;
 
 
-    REG_PIOC_WPMR = 0x50494F00; // Write protect disable
     PIOC->PIO_PDR |= PIO_PDR_P18;
     PIOC->PIO_ABSR |= PIO_ABSR_P18;
 
@@ -67,16 +69,19 @@ int main(void)
 
     while (1) 
     {
-      int current = 1;
-      if (ADC_GetData() < 300) current = 0;
-      if (last_state == 1 && current == 0) score++;
-      last_state = current;
+      // int current = 1;
+      // if (ADC_GetData() < 300) current = 0;
+      // if (last_state == 1 && current == 0) score++;
+      // last_state = current;
 
 
-      printf("Score: %d\n\r", score);
-      int i = 0;
+      // printf("Score: %d | Count: %d \n\r", score, Motor_GetCount());
+      // int i = 0;
       REG_PIOA_ODSR = 1 << 19;
-      while (i++ < 9999999);
+      // while (i++ < 9999999);
+      // printf("SysTick S: % d ", SysTick->VAL);
+      SysTick_Delay(1000000);
+      // printf("SysTick E: %d \n\r", SysTick->VAL);
       REG_PIOA_ODSR &= ~(1 << 19);
     }
 }

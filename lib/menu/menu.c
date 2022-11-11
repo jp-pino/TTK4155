@@ -28,13 +28,14 @@ ISR(TIMER0_COMP_vect) {
   static volatile joy_dir_t last_direction = NEUTRAL;
   static volatile joy_dir_t last_pressed = NEUTRAL;
   joy_t joystick = JOYSTICK_get_data(OFFSET);
+  adc_t adc = ADC_get_data(OFFSET);
 
 
-  uint8_t buffer[1] = { (int8_t)joystick.x };
+  uint8_t buffer[2] = { (int8_t)joystick.x, (int8_t)adc.AIN2};
 
   printf("Data: %d <-> %d <-> %d\n", (int8_t)joystick.x, joystick.x, (int32_t)((int8_t)joystick.x));
 
-  MCP2515_write((message_t){0x05, buffer, 1, DATA_FRAME});
+  MCP2515_write((message_t){0x05, buffer, 2, DATA_FRAME});
   MCP2515_rts();
 
   if (joystick.direction != last_direction) {

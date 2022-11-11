@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := $(shell find . -name "*.c" | grep -v Project_Windows | grep -v node2) 
+SOURCE_FILES := $(shell find . -name "*.c" | grep -v Project_Windows | grep -v Arduino2 | grep -v node2) 
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
