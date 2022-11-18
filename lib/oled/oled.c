@@ -43,8 +43,12 @@ void OLED_init() {
   // Initialization for the timer
   cli();
   TCCR1B |= (1 << WGM12) | (1 << CS12);
-  OCR1AH = (uint8_t)(19340 >> 8) & 0xFF;
-  OCR1AL = (uint8_t)(19340 & 0xFF);
+  // OCR1AH = (uint8_t)(19340 >> 8) & 0xFF;
+  // OCR1AL = (uint8_t)(19340 & 0xFF);
+
+
+  OCR1AH = (uint8_t)(1000 >> 8) & 0xFF;
+  OCR1AL = (uint8_t)(1000 & 0xFF);
   TIMSK |= (1 << OCIE1A);
   sei();
 

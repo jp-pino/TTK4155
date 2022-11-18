@@ -142,6 +142,11 @@ void spi_reset() {
 }
 
 
+void reset() {
+  MCP2515_write((message_t){0x06, { 0x01 }, 1, DATA_FRAME});
+  MCP2515_rts();
+}
+
 
 void can_handler(message_t* m) {
   char buffer[100];
@@ -160,7 +165,7 @@ void can_handler(message_t* m) {
 
 // menu_option_t option1 = {"Line       ", option1_fn};
 // menu_option_t option2 = {"Circle     ", option2_fn};
-// menu_option_t option3 = {"Reset      ", option3_fn};
+menu_option_t option3 = {"Reset      ", reset};
 menu_option_t option4 = {"CANInit        ", spi_write};
 // menu_option_t option5 = {"CANReset   ", spi_reset};
 // menu_option_t option6 = {"ReadCANSTAT", spi_read};
@@ -198,7 +203,7 @@ int main() {
   MENU_init();
   // MENU_add_option(&option1);
   // MENU_add_option(&option2);
-  // MENU_add_option(&option3);
+  MENU_add_option(&option3);
   MENU_add_option(&option4);
   // MENU_add_option(&option5);
   // MENU_add_option(&option6);

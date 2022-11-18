@@ -16,7 +16,7 @@
 #include "systick/systick.h"
 
 
-int score = 0;
+volatile int score = 0;
 int last_state = 1;
 
 

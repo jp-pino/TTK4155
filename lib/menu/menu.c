@@ -56,7 +56,7 @@ ISR(TIMER0_COMP_vect) {
 
     if (joystick.direction == DOWN || joystick.direction == UP) {
       // SCREEN_reset();
-      SCREEN_goto_line(2);
+      SCREEN_goto_line(0);
       SCREEN_print(options[current_option]->title, SCREEN_print_char8);
     }
   }

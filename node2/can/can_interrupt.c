@@ -23,6 +23,8 @@
 
 #define MAX_ENCODER 1600
 
+extern volatile int score;
+
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -83,6 +85,8 @@ void CAN0_Handler( void )
 				REG_PIOA_ODSR = 1 << 19;
 			}
       
+		} else if (message.id ==  0x06) {
+			score = 0;
 		}
 		
 		
