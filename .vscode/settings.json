@@ -8,7 +8,8 @@
     "can_controller.h": "c",
     "printf-stdarg.h": "c",
     "sam.h": "c",
-    "systick.h": "c"
+    "systick.h": "c",
+    "motor.h": "c"
   },
   "files.watcherExclude": {
     "**/target": true

@@ -142,6 +142,18 @@ void spi_reset() {
 }
 
 
+
+void can_handler(message_t* m) {
+  char buffer[100];
+  SCREEN_goto_line(7);
+  sprintf(buffer, "ID: %d", m->id);
+  SCREEN_print(buffer, SCREEN_print_char8);
+  SCREEN_goto_line(6);
+  uint8_t score = m->data[0];
+  sprintf(buffer, "Score: %d   ", score);
+  SCREEN_print(buffer, SCREEN_print_char8);
+}
+
 // void spi_status() {
 //   MCP2515_read_status();
 // }
@@ -154,7 +166,6 @@ menu_option_t option4 = {"CANInit        ", spi_write};
 // menu_option_t option6 = {"ReadCANSTAT", spi_read};
 // menu_option_t option7 = {"ReadStatus ", spi_status};
 
-char buffer[100];
 
 int main() {
   USART_Initialize(MYUBRR);
@@ -166,7 +177,7 @@ int main() {
   ADC_init();
 
   SPI_init(CPOL_LOW, CPHA_LEADING, DORD_MSB);
-  MCP2515_init();
+  MCP2515_init(&can_handler);
 
   // SRAM_test();
 
@@ -193,7 +204,7 @@ int main() {
   // MENU_add_option(&option6);
   // MENU_add_option(&option7);
   
-  
+  // uint8_t count = 0;
   while (1) {
     joy_t joystick = JOYSTICK_get_data(OFFSET);
     adc_t adc = ADC_get_data(NO_CORRECTION);
@@ -204,24 +215,42 @@ int main() {
     // }
 
 
-    SCREEN_goto_line(6);
-    sprintf(buffer, "Status: 0x%x", MCP2515_read_rx_status());
-    SCREEN_print(buffer, SCREEN_print_char8);
+    // SCREEN_goto_line(6);
+    // uint8_t rxstatus = MCP2515_read_rx_status();
+    // sprintf(buffer, "RXStatus: 0x%x  ", rxstatus);
+    // SCREEN_print(buffer, SCREEN_print_char8);
+    // SCREEN_goto_line(3);
+    // // uint8_t status = MCP2515_read_status();
+    // // sprintf(buffer, "Status: 0x%x  ", status);
+    // // SCREEN_print(buffer, SCREEN_print_char8);
 
     // printf("READ ID: %x\n READ LENGTH: %d\n READ REMOTE: %d\n READ DATA: 0x", res.id, res.length, res.remote);
 
     // if (m.id == 0x01) {
-    // if (MCP2515_read_rx_status() == 0x50) {
+
+    // if (rxstatus == 0x50) {
 
       // message_t *m = MCP2515_read();
 
-      // SCREEN_goto_line(5);
+      // SCREEN_goto_line(7);
       // sprintf(buffer, "ID: %d", m->id);
       // SCREEN_print(buffer, SCREEN_print_char8);
-      SCREEN_goto_line(4);
-      sprintf(buffer, "Score: %d   ", MCP2515_read_byte());
-      SCREEN_print(buffer, SCREEN_print_char8);
+      // SCREEN_goto_line(4);
+      // uint8_t score = MCP2515_read_byte();
+      // sprintf(buffer, "Score: %d   ", score);
+      // SCREEN_print(buffer, SCREEN_print_char8);
+
+
+
+  // printf("Data: %d <-> %d <-> %d\n", (int8_t)adc.AIN1, adc.AIN1, (int32_t)((int8_t)adc.AIN1));
+
+
+    //   // MCP2515_init();
     // }
+    
+    // SCREEN_goto_line(5);
+    // sprintf(buffer, "Count: %d   ", count++);
+    // SCREEN_print(buffer, SCREEN_print_char8);
       
       // SCREEN_line(0, 30)
     // }

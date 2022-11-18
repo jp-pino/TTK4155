@@ -15,6 +15,7 @@
 
 #include "../uart_and_printf/printf-stdarg.h"
 #include "../motor/motor.h"
+#include "../systick/systick.h"
 
 #include "can_controller.h"
 
@@ -72,6 +73,12 @@ void CAN0_Handler( void )
 
 			if (message.data[3]) {
       	REG_PIOA_ODSR &= ~(1 << 19);
+				// SysTick_Delay(1000);
+				// int i = 0;
+				// while(i++ < 199999);
+				// REG_PIOA_ODSR = 1 << 19;
+				// i=0;
+				// while(i++ < 199999);
 			} else {
 				REG_PIOA_ODSR = 1 << 19;
 			}

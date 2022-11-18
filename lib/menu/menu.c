@@ -35,11 +35,14 @@ ISR(TIMER0_COMP_vect) {
 
   // printf("Data: %d <-> %d <-> %d\n", (int8_t)adc.AIN1, adc.AIN1, (int32_t)((int8_t)adc.AIN1));
 
-  if (counter++ >= 1) {
-    MCP2515_write((message_t){0x05, { (int8_t)joystick.x, (int8_t)adc.AIN0, (int8_t)adc.AIN1, ((PINB & (1 << 1)) >> 1) & 0xFF}, 4, DATA_FRAME});
-    MCP2515_rts();
-    counter = 0;
-  }
+  MCP2515_write((message_t){0x05, { (int8_t)joystick.x, (int8_t)adc.AIN0, (int8_t)adc.AIN1, ((PINB & (1 << 1)) >> 1) & 0xFF}, 4, DATA_FRAME});
+  MCP2515_rts();
+
+
+  SCREEN_line(0, 30, 128, 30, ZERO);
+  SCREEN_line(0, 35, 128, 35, ZERO);
+  SCREEN_line(0, 30, adc.AIN0/4, 30, ONE);
+  SCREEN_line(0, 35, adc.AIN1/4, 35, ONE);
   
   
 

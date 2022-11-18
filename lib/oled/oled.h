@@ -47,7 +47,7 @@ void SCREEN_pixel(uint8_t x, uint8_t y, bit_t val);
 void SCREEN_pos(uint8_t row, uint8_t col);
 void SCREEN_write_data(uint8_t dt);
 void SCREEN_print(char *data, void (*f)(char));
-void SCREEN_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
+void SCREEN_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, bit_t color);
 void SCREEN_circle(uint8_t x_centre, uint8_t y_centre, uint8_t r);
 
 

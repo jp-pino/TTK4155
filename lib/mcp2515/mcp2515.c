@@ -1,12 +1,21 @@
 #include "mcp2515.h"
 
 #include <stdint.h>
+#include <avr/interrupt.h>
+#include <avr/io.h>
 
 #include "../spi/spi.h"
 
 message_t temp = {0, {0,0,0,0,0,0,0,0}, 0, 0};
+void (*f_pointer)(message_t*);
 
-void MCP2515_init() {
+ISR(INT0_vect) {
+  MCP2515_read();
+  f_pointer(&temp);
+}
+
+
+void MCP2515_init(void (*f)(message_t*)) {
   // Reset
   MCP2515_reset();
   // printf("Reset 1\n");
@@ -17,11 +26,22 @@ void MCP2515_init() {
   // Clear masks
   MCP2515_write_reg(MCP_RXM0SIDH, 0x00);
   MCP2515_write_reg(MCP_RXM0SIDL, 0x00);
-  MCP2515_write_reg(MCP_RXB0CTRL, MCP2515_read_reg(MCP_RXB0CTRL) | (1 << 5) | (1 << 6));
+  // MCP2515_write_reg(MCP_RXB0CTRL, MCP2515_read_reg(MCP_RXB0CTRL) | (1 << 5) | (1 << 6));
 
   // Set interrupts
+  MCP2515_write_reg(MCP_CANINTE, 0x01);
   // MCP2515_write_reg(MCP_CANINTE, 0x01);
-  // MCP2515_write_reg(MCP_CANINTE, 0x01);
+
+  //// Initialization for PD2 - INT0
+
+  // // Disable global interrupts
+  cli();
+  // // Interrupt on rising edge PD2
+  MCUCR |= (1 << ISC01);
+  // Enable interrupt on PD2
+  GICR |= (1 << INT0);
+  // Enable global interrupts
+  sei();
 
 
   // Set CNF1 to SJW = 1 BRP = 1
@@ -34,6 +54,8 @@ void MCP2515_init() {
   
   // Set normal mode
   SPI_send_length("\x02\x0f\x00", 3);
+
+  f_pointer = f;
 }
 
 message_t* MCP2515_read() {
@@ -79,6 +101,9 @@ void MCP2515_write(message_t message) {
     // SPI_send_length(buffer, 2);
     MCP2515_write_reg(0x36 + i, message.data[i]);
   }
+
+  // while(MCP2515_read_status() & 0x08 == 0x00);
+  // MCP2515_write_reg(MCP_CANINTF, MCP2515_read_reg(MCP_CANINTF) & 0xFE);
 }
 
 void MCP2515_rts() {

@@ -186,7 +186,7 @@ void SCREEN_print(char *data, void (*f)(char)) {
   }
 }
 
-void SCREEN_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
+void SCREEN_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, bit_t color) {
   int dx, dy, p, x, y;
   dx = x1 - x0;
   dy = y1 - y0;
@@ -194,7 +194,7 @@ void SCREEN_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
   y = y0;
   p = 2 * dy - dx;
   while (x < x1) {
-    SCREEN_pixel(x, y, ONE);
+    SCREEN_pixel(x, y, color);
     if (p >= 0) {
       y = y + 1;
       p = p + 2 * dy - 2 * dx;

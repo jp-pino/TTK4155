@@ -89,13 +89,13 @@ int main(void)
       SysTick_Delay(10000);
 
 
-      CAN_MESSAGE message = {0, 1, {(uint16_t) (score & 0xFF)}};
+      CAN_MESSAGE message = {0, 1, {(uint8_t) (score & 0xFF), 0, 0, 0, 0, 0, 0, 0}};
 
-      int current_time = SysTick_GetTime();
-      if (current_time - last_time > 1000000) {
-        last_time = current_time;
-        printf("Mailbox: %d | Score: %d | Error: %d | I-Error: %d | Count: %d\n\r", can_send(&message, 0), score, 0, Motor_GetLastError(), Motor_GetCount());
-      }
+      // int current_time = SysTick_GetTime();
+      // if (current_time - last_time > 1000000) {
+      //   last_time = current_time;
+      //   // printf("Mailbox: %d | Score: %d | Error: %d | I-Error: %d | Count: %d\n\r", can_send(&message, 0), score, 0, Motor_GetLastError(), Motor_GetCount());
+      // }
 
 
       int current_time2 = SysTick_GetTime();
@@ -104,7 +104,11 @@ int main(void)
         
         int current = 1;
         if (ADC_GetData() < 300) current = 0;
-        if (last_state == 1 && current == 0) score++;
+        if (last_state == 1 && current == 0) {
+          score++;
+          printf("Mailbox: %d | Score: %d | Error: %d | I-Error: %d | Count: %d\n\r", can_send(&message, 0), score, 0, Motor_GetLastError(), Motor_GetCount());
+        } 
+
         last_state = current;
 
       }
