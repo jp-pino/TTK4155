@@ -18,7 +18,9 @@
 
 #include "can_controller.h"
 
-#define DEBUG_INTERRUPT 1
+#define DEBUG_INTERRUPT 0
+
+#define MAX_ENCODER 1600
 
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -56,20 +58,30 @@ void CAN0_Handler( void )
 			printf("CAN0 message arrived in non-used mailbox\n\r");
 		}
 
-		// if (message.id == 0x05) {
+		if (message.id == 0x05) {
 			// long pwm = map((int8_t)message.data[0], -128, 100, 2363, 5513);
-		// 	long pwm = map((int8_t)message.data[0], 0, 256, 2363, 5513);
-		// 	printf("PWM: %d - %d\n\r", message.data[1], pwm);
-		// 	PWM->PWM_CH_NUM[6].PWM_CDTYUPD |= PWM_CDTY_CDTY(pwm); 
+			long pwm = map((uint8_t)message.data[2], 256, 0, 2363, 5513);
+			// printf("PWM: %d - %d | ", message.data[2], pwm);
+			PWM->PWM_CH_NUM[6].PWM_CDTYUPD |= PWM_CDTY_CDTY(pwm); 
 
-		// 	long speed = map((int8_t)message.data[0], -128, 110, 8000, -8000);
-		// 	Motor_setSpeed(speed);
-		// // }
+			// long speed = map((int8_t)message.data[0], -128, 110, 8000, -8000);
+			// long speed = map((uint8_t)message.data[1], 0, 256, 8000, -8000);
+			long position = map((uint8_t)message.data[1], 0, 256, 0, MAX_ENCODER);
+			// Motor_SetSpeed(speed);
+			Motor_SetPosition(position);
+
+			if (message.data[3]) {
+      	REG_PIOA_ODSR &= ~(1 << 19);
+			} else {
+				REG_PIOA_ODSR = 1 << 19;
+			}
+      
+		}
 		
 		
 
 		if(DEBUG_INTERRUPT)printf("message id: %d ", message.id);
-		if(DEBUG_INTERRUPT)printf("message data %d - length: %d\n\r", message.data, message.data_length);
+		if(DEBUG_INTERRUPT)printf("message data %x %x %x %x - length: %d\n\r", message.data[3], message.data[2], message.data[1], message.data[0], message.data_length);
 
     
 

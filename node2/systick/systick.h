@@ -6,5 +6,6 @@
 
 void SysTick_Init();
 void SysTick_Delay(uint32_t d);
+uint64_t SysTick_GetTime();
 
 #endif//__SYSTICK_SYSTICK_H__

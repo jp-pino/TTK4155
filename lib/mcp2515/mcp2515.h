@@ -10,13 +10,13 @@ typedef enum {
 
 typedef struct {
   uint16_t id;
-  uint8_t* data;
+  uint8_t data[8];
   uint8_t length;
   can_rtr_t remote;
 } message_t;
 
 void MCP2515_init();
-message_t MCP2515_read();
+message_t* MCP2515_read();
 uint8_t MCP2515_read_byte();
 void MCP2515_write(message_t message);
 void MCP2515_write_reg(uint8_t reg, uint8_t data);
@@ -25,6 +25,7 @@ void MCP2515_rts();
 void MCP2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data);
 void MCP2515_reset();
 uint8_t MCP2515_read_status();
+uint8_t MCP2515_read_rx_status();
 
 /*
 mcp2515.h
@@ -87,6 +88,9 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TXB0SIDL  0x32
 #define MCP_TXB0DLC   0x35
 #define MCP_TXB1CTRL	0x40
+#define MCP_TXB1SIDH  0x41
+#define MCP_TXB1SIDL  0x42
+#define MCP_TXB1DLC   0x45
 #define MCP_TXB2CTRL	0x50
 #define MCP_RXB0CTRL	0x60
 #define MCP_RXB0SIDH	0x61

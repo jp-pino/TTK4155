@@ -4,6 +4,10 @@
 #include <stdint.h>
 
 void Motor_Init();
-void Motor_setSpeed(int32_t speed);
+int16_t Motor_GetCount();
+void Motor_SetSpeed(int32_t speed);
+void Motor_SetPosition(uint16_t pos);
+int32_t Motor_Loop();
+int32_t Motor_GetLastError();
 
 #endif//__MOTOR_MOTOR_H__

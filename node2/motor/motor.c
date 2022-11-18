@@ -1,6 +1,8 @@
 #include "motor.h"
 
 #include "sam.h"
+#include "uart_and_printf/printf-stdarg.h"
+#include "uart_and_printf/uart.h"
 
 #include "systick/systick.h"
 
@@ -9,6 +11,12 @@
 #define RST_PIN 1
 #define SEL_PIN 2
 #define OE_PIN 0
+
+int32_t setpoint = 0;
+
+#define K_P (-10.5f)
+#define K_I (0.000000000)
+
 
 void Motor_Init() {
   // Motor    DIR = PD10 | EN = PD9 
@@ -21,8 +29,10 @@ void Motor_Init() {
   PIOD->PIO_SODR |= (1 << DIR_PIN) | (1 << EN_PIN) | (1 << RST_PIN) | (1 << SEL_PIN) | (1 << OE_PIN); // Output data register
   PIOD->PIO_OWER |= (1 << DIR_PIN) | (1 << EN_PIN) | (1 << RST_PIN) | (1 << SEL_PIN) | (1 << OE_PIN); // Enable output
   PIOD->PIO_ODSR |= (1 << EN_PIN) | (1 << RST_PIN);
+  
+  
   PIOD->PIO_ODSR &= ~(1 << RST_PIN);
-  SysTick_Delay(10);
+  SysTick_Delay(100);
   PIOD->PIO_ODSR |= (1 << RST_PIN);
 
   PIOC->PIO_PER |= (0xFF << 1);
@@ -45,7 +55,8 @@ void Motor_Init() {
 }
 
 
-void Motor_setSpeed(int32_t speed) {
+void Motor_SetSpeed(int32_t speed) {
+  // printf("Set speed: %x\n\r", speed);
   if (speed < 0) {
     PIOD->PIO_ODSR |= (1 << DIR_PIN);
     speed *= -1;
@@ -56,8 +67,8 @@ void Motor_setSpeed(int32_t speed) {
   DACC->DACC_CDR = DACC_CDR_DATA((uint32_t)speed);
 }
 
-uint16_t Motor_GetCount() {
-  uint16_t data = 0;
+int16_t Motor_GetCount() {
+  int16_t data = 0;
   // Set OE low to sample and hold encoder value
   PIOD->PIO_ODSR &= ~(1 << OE_PIN);
   // Set SEL low (high byte)
@@ -76,4 +87,34 @@ uint16_t Motor_GetCount() {
   PIOD->PIO_ODSR |= (1 << OE_PIN);
 
   return data;
+}
+
+
+void Motor_SetPosition(uint16_t pos) {
+  setpoint = 312 - (int32_t)pos;
+  // printf("Set pos: %x\n\r", setpoint);
+}
+
+int16_t Motor_GetPosition() {
+  return setpoint;
+}
+
+int64_t lastError = 0;
+uint64_t lastTime = 0;
+
+int32_t Motor_GetLastError() {
+  return lastError;
+}
+
+int32_t Motor_Loop() {
+  int16_t position = Motor_GetCount();
+  uint64_t currentTime = SysTick_GetTime();
+  int32_t error = (int32_t)(position - setpoint);
+
+  Motor_SetSpeed((error) * K_P + lastError * (currentTime - lastTime) / 1000.0 * K_I);
+
+  lastError += (int32_t)(error) * ((int64_t)currentTime - lastTime) / 1000.0;
+  lastTime = currentTime;
+
+  return error;
 }

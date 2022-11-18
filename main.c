@@ -97,12 +97,12 @@ void spi_write() {
 
   printf("READ BYTE: 0x%02x\n", MCP2515_read_byte());
 
-  message_t res = MCP2515_read();
+  message_t* res = MCP2515_read();
   
-  printf("READ ID: %x\n READ LENGTH: %d\n READ REMOTE: %d\n READ DATA: 0x", res.id, res.length, res.remote);
+  printf("READ ID: %x\n READ LENGTH: %d\n READ REMOTE: %d\n READ DATA: 0x", res->id, res->length, res->remote);
 
-  for (int i = 0; i < res.length; i++) {\
-    printf("%02x", res.data[i]);
+  for (int i = 0; i < res->length; i++) {\
+    printf("%02x", res->data[i]);
   }
 
   printf("\n\n");
@@ -149,10 +149,12 @@ void spi_reset() {
 // menu_option_t option1 = {"Line       ", option1_fn};
 // menu_option_t option2 = {"Circle     ", option2_fn};
 // menu_option_t option3 = {"Reset      ", option3_fn};
-menu_option_t option4 = {"CANInit", spi_write};
+menu_option_t option4 = {"CANInit        ", spi_write};
 // menu_option_t option5 = {"CANReset   ", spi_reset};
 // menu_option_t option6 = {"ReadCANSTAT", spi_read};
 // menu_option_t option7 = {"ReadStatus ", spi_status};
+
+char buffer[100];
 
 int main() {
   USART_Initialize(MYUBRR);
@@ -195,11 +197,36 @@ int main() {
   while (1) {
     joy_t joystick = JOYSTICK_get_data(OFFSET);
     adc_t adc = ADC_get_data(NO_CORRECTION);
-    if (joystick.direction == NEUTRAL) {
-      // printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", adc.AIN0, adc.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
-    } else {
-      // printf("DATA[X]: %ld \t DATA[Y]: %ld \t %s \r\n", joystick.x, joystick.y, JOY_DIRECTION_STRINGS[joystick.direction]);
-    }
+    // if (joystick.direction == NEUTRAL) {
+    //   // printf("SLIDER1: %ld \t SLIDER2: %ld \t BUTTON 1: %d \t  BUTTON 2: %d \n\r", adc.AIN0, adc.AIN1, (PINB & 0x01), ((PINB & (1 << 1)) >> 1));
+    // } else {
+    //   // printf("DATA[X]: %ld \t DATA[Y]: %ld \t %s \r\n", joystick.x, joystick.y, JOY_DIRECTION_STRINGS[joystick.direction]);
+    // }
+
+
+    SCREEN_goto_line(6);
+    sprintf(buffer, "Status: 0x%x", MCP2515_read_rx_status());
+    SCREEN_print(buffer, SCREEN_print_char8);
+
+    // printf("READ ID: %x\n READ LENGTH: %d\n READ REMOTE: %d\n READ DATA: 0x", res.id, res.length, res.remote);
+
+    // if (m.id == 0x01) {
+    // if (MCP2515_read_rx_status() == 0x50) {
+
+      // message_t *m = MCP2515_read();
+
+      // SCREEN_goto_line(5);
+      // sprintf(buffer, "ID: %d", m->id);
+      // SCREEN_print(buffer, SCREEN_print_char8);
+      SCREEN_goto_line(4);
+      sprintf(buffer, "Score: %d   ", MCP2515_read_byte());
+      SCREEN_print(buffer, SCREEN_print_char8);
+    // }
+      
+      // SCREEN_line(0, 30)
+    // }
+    
+
   }
 
   return 0;

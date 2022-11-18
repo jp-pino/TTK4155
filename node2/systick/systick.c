@@ -19,3 +19,7 @@ void SysTick_Delay(uint32_t d) {
   uint64_t current = clock;
   while (clock < current + d); 
 }
+
+uint64_t SysTick_GetTime() {
+  return clock;
+}
