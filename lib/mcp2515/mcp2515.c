@@ -4,8 +4,7 @@
 
 #include "../spi/spi.h"
 
-message_t temp = {0, 0, 0, 0};
-char buffer[8];
+message_t temp = {0, {0,0,0,0,0,0,0,0}, 0, 0};
 
 void MCP2515_init() {
   // Reset
@@ -18,9 +17,11 @@ void MCP2515_init() {
   // Clear masks
   MCP2515_write_reg(MCP_RXM0SIDH, 0x00);
   MCP2515_write_reg(MCP_RXM0SIDL, 0x00);
+  MCP2515_write_reg(MCP_RXB0CTRL, MCP2515_read_reg(MCP_RXB0CTRL) | (1 << 5) | (1 << 6));
 
   // Set interrupts
-  MCP2515_write_reg(MCP_CANINTE, 0x01);
+  // MCP2515_write_reg(MCP_CANINTE, 0x01);
+  // MCP2515_write_reg(MCP_CANINTE, 0x01);
 
 
   // Set CNF1 to SJW = 1 BRP = 1
@@ -35,7 +36,7 @@ void MCP2515_init() {
   SPI_send_length("\x02\x0f\x00", 3);
 }
 
-message_t MCP2515_read() {
+message_t* MCP2515_read() {
   SPI_send_length("\x90\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 15);
 
   // for (int i = 0; i < 15; i++) {
@@ -45,12 +46,11 @@ message_t MCP2515_read() {
   temp.length = SPI_getData()[5] & 0x0F;
   // SPI_send_length("\x92\x00\x00\x00\x00\x00\x00\x00\x00\x00", 10);
   for (uint8_t i = 0; i < temp.length; i++) {
-    buffer[i] = SPI_getData()[i + 6];
+    temp.data[i] = SPI_getData()[i + 6];
   }
-  temp.data = buffer;
   temp.remote = (SPI_getData()[5] & (1 << 6)) >> 6;
 
-  return temp;
+  return &temp;
 }
 
 uint8_t MCP2515_read_byte() {
@@ -97,4 +97,8 @@ void MCP2515_reset() {
 
 uint8_t MCP2515_read_status() {
   return SPI_send_length("\xA0\x00\x00", 3);
+}
+
+uint8_t MCP2515_read_rx_status() {
+  return SPI_send_length("\xB0\x00\x00", 3);
 }

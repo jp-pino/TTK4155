@@ -12,9 +12,13 @@
 #include "can/can_interrupt.h"
 
 #include "adc/adc.h"
+#include "motor/motor.h"
+#include "systick/systick.h"
+
 
 int score = 0;
 int last_state = 1;
+
 
 void init_LED()
 {
@@ -23,30 +27,32 @@ void init_LED()
   REG_PIOA_OER  = 1 << 19; //  Enables the output on the I/O line.
   REG_PIOA_ABSR = 1 << 19; // Assigns the I/O line to the Peripheral B function.
   REG_PIOA_PER  = 1 << 19; // Enable REgister
-  
   REG_PIOA_SODR = 1 << 19; // Output data register
-  
-  
   REG_PIOA_OWER = 1 << 19;
   
   
 }
 
+
 int main(void)
 {
     /* Initialize the SAM system */
     SystemInit();
+    SysTick_Init();
     configure_uart();
     // Can Init
     can_init_def_tx_rx_mb((2 << CAN_BR_PHASE2_Pos) | (1 << CAN_BR_PHASE1_Pos) | (1 << CAN_BR_PROPAG_Pos) | (1 << CAN_BR_SJW_Pos) | (20 << CAN_BR_BRP_Pos) | (CAN_BR_SMP_ONCE));
     // ADC Init
     ADC_Init();
 
+    Motor_Init();
+    
     PMC->PMC_PCR |= PMC_PCR_EN | (ID_PWM << PMC_PCR_PID_Pos);
     PMC->PMC_PCER1 = 1 << (ID_PWM - 32);
 
+    WDT->WDT_MR |= WDT_MR_WDDIS;
 
-    REG_PIOC_WPMR = 0x50494F00; // Write protect disable
+
     PIOC->PIO_PDR |= PIO_PDR_P18;
     PIOC->PIO_ABSR |= PIO_ABSR_P18;
 
@@ -61,19 +67,52 @@ int main(void)
 
 
 
-    // init_LED();
+    init_LED();
+
+    int last_time = 0;
+
+    int last_time2 = 0;
+    int can_status = 0;
 
     while (1) 
     {
-      int current = 1;
-      if (ADC_GetData() < 300) current = 0;
-      if (last_state == 1 && current == 0) score++;
-      last_state = current;
 
 
-      printf("Score: %d\n\r", score);
+      // printf("Score: %d | Count: %d\n\r", score, Motor_GetCount());
       // int i = 0;
-      // while (i++ < 999999);
-		//REG_PIOB_CODR = 1 << 27;
+      // while (i++ < 9999999);
+      // REG_PIOA_ODSR &= ~(1 << 19);
+      // printf("SysTick S: % d ", SysTick->VAL);
+      // SysTick_Delay(50000);
+      // printf("SysTick E: %d \n\r", SysTick->VAL);
+      // REG_PIOA_ODSR = 1 << 19;
+      SysTick_Delay(10000);
+
+
+      CAN_MESSAGE message = {0, 1, {(uint16_t) (score & 0xFF)}};
+
+      int current_time = SysTick_GetTime();
+      if (current_time - last_time > 1000000) {
+        last_time = current_time;
+        printf("Mailbox: %d | Score: %d | Error: %d | I-Error: %d | Count: %d\n\r", can_send(&message, 0), score, 0, Motor_GetLastError(), Motor_GetCount());
+      }
+
+
+      int current_time2 = SysTick_GetTime();
+      if (current_time2 - last_time2 > 100000) {
+        last_time2 = current_time2;
+        
+        int current = 1;
+        if (ADC_GetData() < 300) current = 0;
+        if (last_state == 1 && current == 0) score++;
+        last_state = current;
+
+      }
+
+
+      Motor_Loop();
+
+      // printf("Mailbox: %d | Score: %d | Error: %d | I-Error: %d| Count: %d\n\r", can_status, score,, Motor_GetLastError(), Motor_GetCount());
+      can_status = 0;
     }
 }

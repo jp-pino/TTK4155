@@ -24,18 +24,24 @@ void MENU_init() {
   sei();
 }
 
+volatile int counter = 0;
+
 ISR(TIMER0_COMP_vect) {
   static volatile joy_dir_t last_direction = NEUTRAL;
   static volatile joy_dir_t last_pressed = NEUTRAL;
   joy_t joystick = JOYSTICK_get_data(OFFSET);
+  adc_t adc = ADC_get_data(NO_CORRECTION);
 
 
-  uint8_t buffer[1] = { (int8_t)joystick.x };
+  // printf("Data: %d <-> %d <-> %d\n", (int8_t)adc.AIN1, adc.AIN1, (int32_t)((int8_t)adc.AIN1));
 
-  printf("Data: %d <-> %d <-> %d\n", (int8_t)joystick.x, joystick.x, (int32_t)((int8_t)joystick.x));
-
-  MCP2515_write((message_t){0x05, buffer, 1, DATA_FRAME});
-  MCP2515_rts();
+  if (counter++ >= 1) {
+    MCP2515_write((message_t){0x05, { (int8_t)joystick.x, (int8_t)adc.AIN0, (int8_t)adc.AIN1, ((PINB & (1 << 1)) >> 1) & 0xFF}, 4, DATA_FRAME});
+    MCP2515_rts();
+    counter = 0;
+  }
+  
+  
 
   if (joystick.direction != last_direction) {
     // printf("CURRENT: %d - %s!!\n", current_option, JOY_DIRECTION_STRINGS[joystick.direction]);
