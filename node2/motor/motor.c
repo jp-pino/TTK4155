@@ -15,7 +15,7 @@
 int32_t setpoint = 0;
 
 #define K_P (-5.5f)
-#define K_I (0.000000000)
+#define K_I (-0.000000000f)
 
 
 void Motor_ResetCounter() {
@@ -118,9 +118,9 @@ int32_t Motor_Loop() {
   uint64_t currentTime = SysTick_GetTime();
   int32_t error = (int32_t)(position - setpoint);
 
-  Motor_SetSpeed((error) * K_P + lastError * (currentTime - lastTime) / 1000.0 * K_I);
+  Motor_SetSpeed((error) * K_P + lastError * (currentTime - lastTime) / 1000.0);
 
-  lastError += (int32_t)(error) * ((int64_t)currentTime - lastTime) / 1000.0;
+  lastError += ((int32_t)(error) * ((int64_t)currentTime - lastTime) / 1000.0) * K_I;
   lastTime = currentTime;
 
   return error;
