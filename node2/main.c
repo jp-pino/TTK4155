@@ -86,7 +86,7 @@ int main(void)
       // SysTick_Delay(50000);
       // printf("SysTick E: %d \n\r", SysTick->VAL);
       // REG_PIOA_ODSR = 1 << 19;
-      SysTick_Delay(10000);
+      SysTick_Delay(1000);
 
 
       CAN_MESSAGE message = {0, 1, {(uint8_t) (score & 0xFF), 0, 0, 0, 0, 0, 0, 0}};

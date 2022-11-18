@@ -10,6 +10,7 @@
 #include "lib/menu/menu.h"
 #include "lib/spi/spi.h"
 #include "lib/mcp2515/mcp2515.h"
+#include "lib/game/game.h"
 
 #define FOSC 4951200  // Clock Speed
 #define BAUD 9600
@@ -142,21 +143,15 @@ void spi_reset() {
 }
 
 
-void reset() {
-  MCP2515_write((message_t){0x06, { 0x01 }, 1, DATA_FRAME});
-  MCP2515_rts();
-}
-
 
 void can_handler(message_t* m) {
   char buffer[100];
-  SCREEN_goto_line(7);
-  sprintf(buffer, "ID: %d", m->id);
-  SCREEN_print(buffer, SCREEN_print_char8);
-  SCREEN_goto_line(6);
-  uint8_t score = m->data[0];
-  sprintf(buffer, "Score: %d   ", score);
-  SCREEN_print(buffer, SCREEN_print_char8);
+  if (GAME_Status()) {
+    SCREEN_goto_line(6);
+    uint8_t score = m->data[0];
+    sprintf(buffer, "Score: %d   ", score);
+    SCREEN_print(buffer, SCREEN_print_char8);
+  }
 }
 
 // void spi_status() {
@@ -164,9 +159,10 @@ void can_handler(message_t* m) {
 // }
 
 // menu_option_t option1 = {"Line       ", option1_fn};
-// menu_option_t option2 = {"Circle     ", option2_fn};
-menu_option_t option3 = {"Reset      ", reset};
-menu_option_t option4 = {"CANInit        ", spi_write};
+menu_option_t option1 = {"New Game     ", GAME_Enable};
+menu_option_t option2 = {"End Game     ", GAME_Disable};
+menu_option_t option3 = {"Reset encoder", GAME_ResetEncoder};
+// menu_option_t option4 = {"CANInit      ", spi_write};
 // menu_option_t option5 = {"CANReset   ", spi_reset};
 // menu_option_t option6 = {"ReadCANSTAT", spi_read};
 // menu_option_t option7 = {"ReadStatus ", spi_status};
@@ -201,13 +197,15 @@ int main() {
 // 
 
   MENU_init();
-  // MENU_add_option(&option1);
-  // MENU_add_option(&option2);
+  MENU_add_option(&option1);
+  MENU_add_option(&option2);
   MENU_add_option(&option3);
-  MENU_add_option(&option4);
+  // MENU_add_option(&option4);
   // MENU_add_option(&option5);
   // MENU_add_option(&option6);
   // MENU_add_option(&option7);
+
+  MENU_PrintCurrent();
   
   // uint8_t count = 0;
   while (1) {

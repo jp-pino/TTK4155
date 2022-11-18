@@ -209,19 +209,19 @@ void SCREEN_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, bit_t color) {
   }
 }
 
-void SCREEN_circle(uint8_t x_centre, uint8_t y_centre, uint8_t r) {
+void SCREEN_circle(uint8_t x_centre, uint8_t y_centre, uint8_t r, bit_t color) {
   int x = r, y = 0;
 
   // Printing the initial point on the axes
   // after translation
-  SCREEN_pixel(x + x_centre, y + y_centre, ONE);
+  SCREEN_pixel(x + x_centre, y + y_centre, color);
 
   // When radius is zero only a single
   // point will be printed
   if (r > 0) {
-    SCREEN_pixel(x + x_centre, -y + y_centre, ONE);
-    SCREEN_pixel(y + x_centre, x + y_centre, ONE);
-    SCREEN_pixel(-y + x_centre, x + y_centre, ONE);
+    SCREEN_pixel(x + x_centre, -y + y_centre, color);
+    SCREEN_pixel(y + x_centre, x + y_centre, color);
+    SCREEN_pixel(-y + x_centre, x + y_centre, color);
   }
 
   // Initialising the value of P
@@ -242,18 +242,18 @@ void SCREEN_circle(uint8_t x_centre, uint8_t y_centre, uint8_t r) {
 
     // Printing the generated point and its reflection
     // in the other octants after translation
-    SCREEN_pixel(x + x_centre, y + y_centre, ONE);
-    SCREEN_pixel(-x + x_centre, y + y_centre, ONE);
-    SCREEN_pixel(x + x_centre, -y + y_centre, ONE);
-    SCREEN_pixel(-x + x_centre, -y + y_centre, ONE);
+    SCREEN_pixel(x + x_centre, y + y_centre, color);
+    SCREEN_pixel(-x + x_centre, y + y_centre, color);
+    SCREEN_pixel(x + x_centre, -y + y_centre, color);
+    SCREEN_pixel(-x + x_centre, -y + y_centre, color);
 
     // If the generated point is on the line x = y then
     // the perimeter points have already been printed
     if (x != y) {
-      SCREEN_pixel(y + x_centre, x + y_centre, ONE);
-      SCREEN_pixel(-y + x_centre, x + y_centre, ONE);
-      SCREEN_pixel(y + x_centre, -x + y_centre, ONE);
-      SCREEN_pixel(-y + x_centre, -x + y_centre, ONE);
+      SCREEN_pixel(y + x_centre, x + y_centre, color);
+      SCREEN_pixel(-y + x_centre, x + y_centre, color);
+      SCREEN_pixel(y + x_centre, -x + y_centre, color);
+      SCREEN_pixel(-y + x_centre, -x + y_centre, color);
     }
   }
 }

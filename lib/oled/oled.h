@@ -48,7 +48,7 @@ void SCREEN_pos(uint8_t row, uint8_t col);
 void SCREEN_write_data(uint8_t dt);
 void SCREEN_print(char *data, void (*f)(char));
 void SCREEN_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, bit_t color);
-void SCREEN_circle(uint8_t x_centre, uint8_t y_centre, uint8_t r);
+void SCREEN_circle(uint8_t x_centre, uint8_t y_centre, uint8_t r, bit_t color);
 
 
 #endif//__LIB_OLED_OLED_H__

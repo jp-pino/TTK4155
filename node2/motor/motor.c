@@ -14,9 +14,16 @@
 
 int32_t setpoint = 0;
 
-#define K_P (-10.5f)
+#define K_P (-5.5f)
 #define K_I (0.000000000)
 
+
+void Motor_ResetCounter() {
+  PIOD->PIO_ODSR &= ~(1 << RST_PIN);
+  int i = 0;
+  while(i++ < 99999);
+  PIOD->PIO_ODSR |= (1 << RST_PIN);
+}
 
 void Motor_Init() {
   // Motor    DIR = PD10 | EN = PD9 

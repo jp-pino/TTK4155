@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 void Motor_Init();
+void Motor_ResetCounter();
 int16_t Motor_GetCount();
 void Motor_SetSpeed(int32_t speed);
 void Motor_SetPosition(uint16_t pos);

@@ -6,6 +6,7 @@
 #include "../joystick/joystick.h"
 #include "../oled/oled.h"
 #include "../mcp2515/mcp2515.h"
+#include "../game/game.h"
 
 menu_option_t* options[MENU_MAX_OPTIONS];
 int current_option;
@@ -25,6 +26,7 @@ void MENU_init() {
 }
 
 volatile int counter = 0;
+volatile uint8_t prev_button = 0;
 
 ISR(TIMER0_COMP_vect) {
   static volatile joy_dir_t last_direction = NEUTRAL;
@@ -35,14 +37,31 @@ ISR(TIMER0_COMP_vect) {
 
   // printf("Data: %d <-> %d <-> %d\n", (int8_t)adc.AIN1, adc.AIN1, (int32_t)((int8_t)adc.AIN1));
 
-  MCP2515_write((message_t){0x05, { (int8_t)joystick.x, (int8_t)adc.AIN0, (int8_t)adc.AIN1, ((PINB & (1 << 1)) >> 1) & 0xFF}, 4, DATA_FRAME});
-  MCP2515_rts();
 
 
-  SCREEN_line(0, 30, 128, 30, ZERO);
-  SCREEN_line(0, 35, 128, 35, ZERO);
-  SCREEN_line(0, 30, adc.AIN0/4, 30, ONE);
-  SCREEN_line(0, 35, adc.AIN1/4, 35, ONE);
+  if (GAME_Status()) {
+    uint8_t button = ((PINB & (1 << 1)) >> 1) & 0xFF;
+    uint8_t state = 0;
+    if (button == 1 && prev_button == 0) {
+      state = 1;
+    }
+    MCP2515_write((message_t){0x05, { (int8_t)joystick.x, (int8_t)adc.AIN0, (int8_t)adc.AIN1, state}, 4, DATA_FRAME});
+    MCP2515_rts();
+    
+
+    SCREEN_line(0, 30, 128, 30, ZERO);
+    SCREEN_line(0, 35, 128, 35, ZERO);
+    SCREEN_line(0, 30, adc.AIN0/4, 30, ONE);
+    SCREEN_line(0, 35, adc.AIN1/4, 35, ONE);
+
+
+    if (button) {
+      SCREEN_circle(SCREEN_W - 15, 15, 5, ONE);
+    } else {
+      SCREEN_circle(SCREEN_W - 15, 15, 5, ZERO);
+    }
+    prev_button = button;
+  }
   
   
 
@@ -56,8 +75,7 @@ ISR(TIMER0_COMP_vect) {
 
     if (joystick.direction == DOWN || joystick.direction == UP) {
       // SCREEN_reset();
-      SCREEN_goto_line(0);
-      SCREEN_print(options[current_option]->title, SCREEN_print_char8);
+      MENU_PrintCurrent();
     }
   }
 
@@ -67,6 +85,11 @@ ISR(TIMER0_COMP_vect) {
 
   last_pressed = joystick.button;
   last_direction = joystick.direction;
+}
+
+void MENU_PrintCurrent() {
+  SCREEN_goto_line(0);
+  SCREEN_print(options[current_option]->title, SCREEN_print_char8);
 }
 
 void MENU_add_option(menu_option_t* option) {

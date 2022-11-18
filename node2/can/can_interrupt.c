@@ -23,6 +23,9 @@
 
 #define MAX_ENCODER 1600
 
+#define RST_SCORE_FLAG   0
+#define RST_ENCODER_FLAG 1
+
 extern volatile int score;
 
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
@@ -86,7 +89,14 @@ void CAN0_Handler( void )
 			}
       
 		} else if (message.id ==  0x06) {
-			score = 0;
+			printf("Message %x\n\r", message.data[0]);
+			if (((message.data[0] & (1 << RST_SCORE_FLAG)) & 0xFF) != 0x00) {
+				printf("RST_SCORE_FLAG\n\r");
+				score = 0;	
+			} else if (((message.data[0] & (1 << RST_ENCODER_FLAG)) & 0xFF) != 0x00) {
+				printf("RST_ENCODER_FLAG\n\r");
+				Motor_ResetCounter();
+			}
 		}
 		
 		

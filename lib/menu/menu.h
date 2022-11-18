@@ -9,6 +9,7 @@ typedef struct {
 } menu_option_t;
 
 void MENU_add_option(menu_option_t *option);
+void MENU_PrintCurrent();
 void MENU_init();
 
 
